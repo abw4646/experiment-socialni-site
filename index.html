@@ -87,6 +87,38 @@
       display: inline-block;
       margin: 8px 0;
     }
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  height: 70vh;
+  overflow: hidden;
+  margin-bottom: 25px;
+  border-radius: 18px;
+  background: black;
+}
+
+/* Rozmazaná vrstva */
+.video-blur {
+  position: absolute;
+  width: 120%;
+  height: 120%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  filter: blur(25px) brightness(0.7);
+  z-index: 1;
+}
+
+/* Hlavní video */
+.video-main {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
   </style>
 </head>
 <body>
@@ -104,28 +136,31 @@
   <h2>Fáze 1: Krátká expozice</h2>
   <p id="exposure-description"></p>
 
-<div id="exp-feed" class="feed-container hidden"
-     style="height: 90vh; max-height: none; overflow-y: scroll; background:#000; padding:0; margin:0; border-radius:18px;">
-
-
-
-  <video src="short2.mp4" muted playsinline
-         style="width:100%; height:70vh; object-fit:cover; margin-bottom:20px;"></video>
-
-  <video src="short3.mp4" muted playsinline
-         style="width:100%; height:70vh; object-fit:cover; margin-bottom:20px;"></video>
-
-  <video src="short4.mp4" muted playsinline
-         style="width:100%; height:70vh; object-fit:cover; margin-bottom:20px;"></video>
-
-  <video src="short5.mp4" muted playsinline
-         style="width:100%; height:70vh; object-fit:cover; margin-bottom:20px;"></video>
-  
-  <video src="short6.mp4" muted playsinline
-         style="width:100%; height:70vh; object-fit:cover; margin-bottom:20px;"></video>
-
-
+<div class="video-wrapper">
+    <video class="video-blur" src="short2.mp4" muted playsinline></video>
+    <video class="video-main" src="short2.mp4" muted playsinline></video>
 </div>
+
+<div class="video-wrapper">
+    <video class="video-blur" src="short3.mp4" muted playsinline></video>
+    <video class="video-main" src="short3.mp4" muted playsinline></video>
+</div>
+
+<div class="video-wrapper">
+    <video class="video-blur" src="short4.mp4" muted playsinline></video>
+    <video class="video-main" src="short4.mp4" muted playsinline></video>
+</div>
+
+<div class="video-wrapper">
+    <video class="video-blur" src="short5.mp4" muted playsinline></video>
+    <video class="video-main" src="short5.mp4" muted playsinline></video>
+</div>
+
+<div class="video-wrapper">
+    <video class="video-blur" src="short6.mp4" muted playsinline></video>
+    <video class="video-main" src="short6.mp4" muted playsinline></video>
+</div>
+
 
 
 
@@ -186,7 +221,8 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const videos = document.querySelectorAll("#exp-feed video");
+  const videos = document.querySelectorAll("#exp-feed .video-main");
+
 
   function pauseAll() {
     videos.forEach(v => v.pause());
