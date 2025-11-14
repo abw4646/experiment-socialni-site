@@ -138,27 +138,27 @@
 
 <div class="video-wrapper">
     <video class="video-blur" src="short2.mp4" muted playsinline></video>
-    <video class="video-main" src="short2.mp4" muted playsinline></video>
+    <video class="video-main" src="short2.mp4" muted playsinline autoplay></video>
 </div>
 
 <div class="video-wrapper">
     <video class="video-blur" src="short3.mp4" muted playsinline></video>
-    <video class="video-main" src="short3.mp4" muted playsinline></video>
+    <video class="video-main" src="short3.mp4" muted playsinline autoplay></video>
 </div>
 
 <div class="video-wrapper">
     <video class="video-blur" src="short4.mp4" muted playsinline></video>
-    <video class="video-main" src="short4.mp4" muted playsinline></video>
+    <video class="video-main" src="short4.mp4" muted playsinline autoplay></video>
 </div>
 
 <div class="video-wrapper">
     <video class="video-blur" src="short5.mp4" muted playsinline></video>
-    <video class="video-main" src="short5.mp4" muted playsinline></video>
+    <video class="video-main" src="short5.mp4" muted playsinline autoplay></video>
 </div>
 
 <div class="video-wrapper">
     <video class="video-blur" src="short6.mp4" muted playsinline></video>
-    <video class="video-main" src="short6.mp4" muted playsinline></video>
+    <video class="video-main" src="short6.mp4" muted playsinline autoplay></video>
 </div>
 
 
@@ -223,9 +223,13 @@
 document.addEventListener("DOMContentLoaded", () => {
   const videos = document.querySelectorAll("#exp-feed .video-main");
 
-
   function pauseAll() {
     videos.forEach(v => v.pause());
+  }
+
+  // Autoplay prvního videa
+  if (videos.length > 0) {
+    videos[0].play().catch(() => {});
   }
 
   const observer = new IntersectionObserver(entries => {
@@ -235,9 +239,7 @@ document.addEventListener("DOMContentLoaded", () => {
         entry.target.play();
       }
     });
-  }, {
-    threshold: 0.6
-  });
+  }, { threshold: 0.6 });
 
   videos.forEach(video => observer.observe(video));
 
@@ -251,14 +253,6 @@ document.addEventListener("DOMContentLoaded", () => {
           next.play();
         }, 600);
       }
-    });
-  });
-
-  // DŮLEŽITÉ – TADY MUSÍ BÝT!
-  videos.forEach(video => {
-    video.addEventListener("click", () => {
-      video.muted = false;
-      video.play();
     });
   });
 });
