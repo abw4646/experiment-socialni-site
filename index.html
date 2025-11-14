@@ -182,7 +182,6 @@
   <a id="post-form" href="#" class="btn" target="_blank">Pokračovat</a>
 </div>
 
-
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const videos = document.querySelectorAll("#exp-feed video");
@@ -226,10 +225,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+
 /* ----------------------------------------------------------
-   KONFIGURACE
+   ZBYTEK KÓDU (BEZ ZMĚN)
 ---------------------------------------------------------- */
-const POST_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdYYYYYYYYYYYY/viewform"; // ← doplníš svůj
+
+const POST_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdYYYYYYYYYYYY/viewform";
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbyyadGtr2NtJLlR3PEDPlBwwm2052wT11x4d-tojtDQMW66k704tk_RSdA51-1nfmv_/exec";
 
 const EXPOSURE_SECONDS = 120;
@@ -243,9 +244,6 @@ const TASKS = [
   { text: "6 lahví v balení × 7 balení = ?", correct: 42 }
 ];
 
-/* ----------------------------------------------------------
-   PROMĚNNÉ
----------------------------------------------------------- */
 let group = null;
 let exposureRemaining = EXPOSURE_SECONDS;
 let taskRemaining = TASK_SECONDS;
@@ -255,9 +253,6 @@ let currentTask = 0;
 let correctCount = 0;
 let participantID = null;
 
-/* ----------------------------------------------------------
-   FUNKCE
----------------------------------------------------------- */
 function show(id) {
   ["screen-intro","screen-exposure","screen-latency","screen-task","screen-end"]
     .forEach(s => document.getElementById(s).classList.add("hidden"));
@@ -271,13 +266,11 @@ function startExperiment() {
   if (group === "exp") {
     document.getElementById("exp-feed").classList.remove("hidden");
     document.getElementById("ctrl-text").classList.add("hidden");
-    document.getElementById("exposure-description").textContent =
-      "Prohlížejte feed videí po dobu 2 minut.";
+    document.getElementById("exposure-description").textContent = "Prohlížejte feed videí po dobu 2 minut.";
   } else {
     document.getElementById("ctrl-text").classList.remove("hidden");
     document.getElementById("exp-feed").classList.add("hidden");
-    document.getElementById("exposure-description").textContent =
-      "Čtěte prosím text po dobu 2 minut.";
+    document.getElementById("exposure-description").textContent = "Čtěte prosím text po dobu 2 minut.";
   }
 
   const t = document.getElementById("exposure-timer");
@@ -331,8 +324,11 @@ function submitAnswer() {
   if (val === TASKS[currentTask].correct) correctCount++;
 
   currentTask++;
-  if (currentTask < TASKS.length && taskRemaining > 0) renderTask();
-  else endTask();
+  if (currentTask < TASKS.length && taskRemaining > 0) {
+    renderTask();
+  } else {
+    endTask();
+  }
 }
 
 function endTask() {
@@ -342,7 +338,7 @@ function endTask() {
   document.getElementById("summary-group").textContent =
     group === "exp" ? "experimentální" : "kontrolní";
   document.getElementById("summary-latency").textContent =
-    (latencyMs/1000).toFixed(2);
+    (latencyMs / 1000).toFixed(2);
   document.getElementById("summary-score").textContent = correctCount;
 
   document.getElementById("post-form").href = POST_FORM_URL;
@@ -354,8 +350,9 @@ function endTask() {
 function genID(len) {
   const c = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let out = "";
-  for (let i = 0; i < len; i++)
-    out += c[Math.floor(Math.random()*c.length)];
+  for (let i = 0; i < len; i++) {
+    out += c[Math.floor(Math.random() * c.length)];
+  }
   return out;
 }
 
@@ -367,7 +364,7 @@ function sendToSheet() {
     body: JSON.stringify({
       participant_id: participantID,
       group: group,
-      latency_seconds: latencyMs/1000,
+      latency_seconds: latencyMs / 1000,
       correct_answers: correctCount
     })
   });
@@ -376,3 +373,4 @@ function sendToSheet() {
 
 </body>
 </html>
+
