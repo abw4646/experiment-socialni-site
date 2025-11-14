@@ -1,10 +1,9 @@
-<!-- Full index.html with video blur TikTok-like feed and complete JS/HTML -->
 <!DOCTYPE html>
 <html lang="cs">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Experiment – Sociální sítě</title>
+<title>Experiment – Sociální sítě (Finální verze)</title>
 <style>
 body {
   font-family: Arial, sans-serif;
@@ -13,9 +12,7 @@ body {
   padding: 0;
   text-align: center;
 }
-.hidden {
-  display: none;
-}
+.hidden { display: none; }
 .container {
   max-width: 700px;
   margin: 20px auto;
@@ -32,9 +29,7 @@ button {
   color: white;
   cursor: pointer;
 }
-button:hover {
-  opacity: 0.9;
-}
+button:hover { opacity: 0.9; }
 .video-wrapper {
   position: relative;
   width: 100%;
@@ -61,116 +56,40 @@ button:hover {
   height: 100%;
   object-fit: contain;
   z-index: 2;
-  /* --- ÚKOL - vylepšený vzhled --- */
-
-#screen-task h3 {
-  font-size: 28px;
-  margin-bottom: 5px;
 }
-
-#task-timer {
-  font-weight: bold;
-}
-
-#task-content {
-  margin-top: 40px;
-  text-align: center;
-  font-size: 22px;
-  line-height: 1.4;
-}
-
-.task-item p {
-  margin-bottom: 25px;
-}
-
-#task-answer {
-  width: 200px;
-  padding: 12px 14px;
-  font-size: 20px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  text-align: center;
-  margin-bottom: 25px;
-}
-
-#screen-task button {
-  padding: 14px 30px;
+#present-options button {
+  margin: 12px;
+  padding: 14px 28px;
   font-size: 20px;
   border-radius: 14px;
-  background: #4c8bf5;
-  border: none;
-  color: white;
-  cursor: pointer;
-}
-
-#screen-task button:hover {
-  opacity: 0.9;
-}
-
 }
 </style>
 </head>
 <body>
 
-<!-- ÚVODNÍ OBRAZOVKA -->
 <div id="screen-intro" class="container">
   <h2>Experimentální část výzkumu</h2>
   <p>Děkujeme za účast. Po kliknutí na tlačítko budete náhodně zařazeni do jedné ze dvou skupin.</p>
   <button onclick="startExperiment()">Začít</button>
 </div>
 
-<!-- EXPOZICE -->
 <div id="screen-exposure" class="container hidden">
   <h3 id="exposure-description">Načítám…</h3>
-  <p>Zbývající čas: <span id="exposure-timer">120</span> sekund</p>
+  <p>Zbývající čas: <span id="exposure-timer">120</span> sekund</span></p>
 
-  <div id="exp-feed" class="feed-container hidden"
-       style="height: 90vh; overflow-y: scroll; background:#000; border-radius:18px; padding:0; margin-top:20px;">
-
-    <div class="video-wrapper">
-      <video class="video-blur" src="short2.mp4" muted playsinline></video>
-      <video class="video-main" src="short2.mp4" muted playsinline autoplay></video>
-    </div>
-
-    <div class="video-wrapper">
-      <video class="video-blur" src="short3.mp4" muted playsinline></video>
-      <video class="video-main" src="short3.mp4" muted playsinline autoplay></video>
-    </div>
-
-    <div class="video-wrapper">
-      <video class="video-blur" src="short4.mp4" muted playsinline></video>
-      <video class="video-main" src="short4.mp4" muted playsinline autoplay></video>
-    </div>
-
-    <div class="video-wrapper">
-      <video class="video-blur" src="short5.mp4" muted playsinline></video>
-      <video class="video-main" src="short5.mp4" muted playsinline autoplay></video>
-    </div>
-
-    <div class="video-wrapper">
-      <video class="video-blur" src="short6.mp4" muted playsinline></video>
-      <video class="video-main" src="short6.mp4" muted playsinline autoplay></video>
-    </div>
-
-  </div>
+  <div id="exp-feed" class="hidden" style="height:90vh; overflow-y:scroll; background:#000; border-radius:18px; padding:0; margin-top:20px;"></div>
 
   <div id="ctrl-text" class="hidden" style="text-align:left; padding:20px; background:white; border-radius:12px; margin-top:20px;">
     <h3>Neutrální text</h3>
-    <p>
-      Toto je neutrální text určený pro kontrolní skupinu. Prosím čtěte jej po dobu dvou minut.
-      Jeho účelem je nezpůsobovat žádné emoční reakce ani zvýšenou pozornost. Tento text slouží pouze jako
-      kontrolní prvek pro porovnání výsledků experimentální skupiny.
-    </p>
+    <p>Prosím čtěte následující text po dobu dvou minut...</p>
   </div>
 </div>
 
-<!-- LATENCE -->
 <div id="screen-latency" class="container hidden">
   <h3>Klikněte na tlačítko pro zahájení úkolu</h3>
   <button onclick="startTask()">Začít úkol</button>
 </div>
 
-<!-- ÚKOL -->
 <div id="screen-task" class="container hidden">
   <h3>Úkol</h3>
   <p>Zbývající čas: <span id="task-timer">180</span> sekund</p>
@@ -178,68 +97,36 @@ button:hover {
   <button onclick="submitAnswer()">Odeslat odpověď</button>
 </div>
 
-<!-- KONEC -->
+<div id="screen-present" class="container hidden">
+  <h3>Mini‑experiment – preference odměn</h3>
+  <p>Vyberte možnost, která je vám bližší.</p>
+  <div id="present-options" style="margin-top:20px;"></div>
+</div>
+
 <div id="screen-end" class="container hidden">
   <h3>Děkujeme za účast</h3>
   <p>Kód respondenta: <b id="code-box"></b></p>
   <p>Skupina: <span id="summary-group"></span></p>
   <p>Latence: <span id="summary-latency"></span> s</p>
   <p>Počet správných odpovědí: <span id="summary-score"></span></p>
-  <a id="post-form" href="#" target="_blank">
-    <button>Pokračovat</button>
-  </a>
+  <p>Present bias skóre (počet voleb „dnes“): <b id="summary-bias"></b></p>
+  <a id="post-form" href="#" target="_blank"><button>Pokračovat</button></a>
 </div>
 
 <script>
-// ----------------------------------------------------------
-// VIDEO BLUR FEED – TikTok style
-// ----------------------------------------------------------
-
-const videos = document.querySelectorAll("#exp-feed .video-main");
-
-function pauseAll() {
-  videos.forEach(v => v.pause());
-}
-
-// Autoplay prvního videa
-if (videos.length > 0) {
-  videos[0].play().catch(() => {});
-}
-
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      pauseAll();
-      entry.target.play();
-    }
-  });
-}, { threshold: 0.6 });
-
-videos.forEach(video => observer.observe(video));
-
-videos.forEach((video, index) => {
-  video.addEventListener("ended", () => {
-    const next = videos[index + 1];
-    if (next) {
-      next.scrollIntoView({ behavior: "smooth", block: "center" });
-      setTimeout(() => {
-        pauseAll();
-        next.play();
-      }, 600);
-    }
-  });
-});
-
-
-// ----------------------------------------------------------
-// KONFIGURACE
-// ----------------------------------------------------------
-
-const POST_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdYYYYYYYYYYYY/viewform";
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbyyadGtr2NtJLlR3PEDPlBwwm2052wT11x4d-tojtDQMW66k704tk_RSdA51-1nfmv_/exec";
+const POST_FORM_URL = "https://docs.google.com/forms/.....";
+const SHEET_URL = "https://script.google.com/macros/s/.../exec";
 
 const EXPOSURE_SECONDS = 120;
 const TASK_SECONDS = 180;
+
+const PRESENT_CHOICES = [
+  { now: "200 Kč dnes", later: "260 Kč za 7 dní" },
+  { now: "300 Kč dnes", later: "380 Kč za 14 dní" },
+  { now: "150 Kč dnes", later: "230 Kč za  7 dní" },
+  { now: "500 Kč dnes", later: "710 Kč za 30 dní" },
+  { now: "80 Kč dnes",  later: "140 Kč za  7 dní" }
+];
 
 const TASKS = [
   { text: "V obchodě mají balení tužek po 4 kusech. Jana koupila 3 balení. Kolik tužek koupila?", correct: 12 },
@@ -256,112 +143,80 @@ let latencyStart = null;
 let latencyMs = null;
 let currentTask = 0;
 let correctCount = 0;
+let biasIndex = 0;
+let biasImmediate = 0;
 let participantID = null;
 
-
-// ----------------------------------------------------------
-// PŘEPÍNÁNÍ OBRAZOVEK
-// ----------------------------------------------------------
-
-function show(id) {
-  ["screen-intro","screen-exposure","screen-latency","screen-task","screen-end"]
-    .forEach(s => document.getElementById(s).classList.add("hidden"));
+function show(id){
+  ["screen-intro","screen-exposure","screen-latency","screen-task","screen-present","screen-end"]
+    .forEach(s=>document.getElementById(s).classList.add("hidden"));
   document.getElementById(id).classList.remove("hidden");
 }
 
-
-// ----------------------------------------------------------
-// START EXPERIMENTU
-// ----------------------------------------------------------
-
-function startExperiment() {
-  group = Math.random() < 0.5 ? "exp" : "ctrl";
+function startExperiment(){
+  group = Math.random()<0.5?"exp":"ctrl";
   show("screen-exposure");
 
-  if (group === "exp") {
-    document.getElementById("exp-feed").classList.remove("hidden");
-    document.getElementById("ctrl-text").classList.add("hidden");
-    document.getElementById("exposure-description").textContent =
-      "Prohlížejte feed videí po dobu 2 minut.";
-  } else {
-    document.getElementById("ctrl-text").classList.remove("hidden");
-    document.getElementById("exp-feed").classList.add("hidden");
-    document.getElementById("exposure-description").textContent =
-      "Čtěte prosím text po dobu 2 minut.";
-  }
+  if(group==="exp"){ document.getElementById("exp-feed").classList.remove("hidden"); }
+  else{ document.getElementById("ctrl-text").classList.remove("hidden"); }
 
-  const t = document.getElementById("exposure-timer");
-  const interval = setInterval(() => {
-    exposureRemaining--;
-    t.textContent = exposureRemaining;
-    if (exposureRemaining <= 0) {
-      clearInterval(interval);
-      show("screen-latency");
-      latencyStart = performance.now();
-    }
-  }, 1000);
+  const t=document.getElementById("exposure-timer");
+  const interval=setInterval(()=>{
+    exposureRemaining--; t.textContent=exposureRemaining;
+    if(exposureRemaining<=0){ clearInterval(interval); show("screen-latency"); latencyStart=performance.now(); }
+  },1000);
 }
 
-
-// ----------------------------------------------------------
-// ÚKOL
-// ----------------------------------------------------------
-
-function startTask() {
-  latencyMs = performance.now() - latencyStart;
+function startTask(){
+  latencyMs=performance.now()-latencyStart;
   show("screen-task");
   renderTask();
 
-  const timer = document.getElementById("task-timer");
-  const interval = setInterval(() => {
-    taskRemaining--;
-    timer.textContent = taskRemaining;
-    if (taskRemaining <= 0) {
-      clearInterval(interval);
-      endTask();
-    }
-  }, 1000);
+  const timer=document.getElementById("task-timer");
+  const interval=setInterval(()=>{
+    taskRemaining--; timer.textContent=taskRemaining;
+    if(taskRemaining<=0){ clearInterval(interval); endTask(); }
+  },1000);
 }
 
-function renderTask() {
-  const c = document.getElementById("task-content");
-  c.innerHTML = "";
-  if (currentTask >= TASKS.length) return endTask();
-  const t = TASKS[currentTask];
-  c.innerHTML = `<div class="task-item"><p>${t.text}</p><input id="task-answer" type="number"></div>`;
+function renderTask(){
+  const c=document.getElementById("task-content");
+  if(currentTask>=TASKS.length) return endTask();
+  c.innerHTML=`<p>${TASKS[currentTask].text}</p>
+               <input id="task-answer" type="number" style="font-size:20px; padding:10px;">`;
 }
 
-
-// ----------------------------------------------------------
-// ODPOVĚĎ
-// ----------------------------------------------------------
-
-function submitAnswer() {
-  const inp = document.getElementById("task-answer");
-  if (!inp) return;
-
-  const val = parseInt(inp.value);
-  if (val === TASKS[currentTask].correct) correctCount++;
-
+function submitAnswer(){
+  const val=parseInt(document.getElementById("task-answer").value);
+  if(val===TASKS[currentTask].correct) correctCount++;
   currentTask++;
-  if (currentTask < TASKS.length && taskRemaining > 0) renderTask();
-  else endTask();
+  if(currentTask<TASKS.length && taskRemaining>0) renderTask(); else endTask();
 }
 
+function endTask(){ show("screen-present"); renderPresent(); }
 
-// ----------------------------------------------------------
-// KONEC
-// ----------------------------------------------------------
+function renderPresent(){
+  if(biasIndex>=PRESENT_CHOICES.length) return finishAll();
+  const c=document.getElementById("present-options");
+  const ch=PRESENT_CHOICES[biasIndex];
+  c.innerHTML = `
+    <button onclick="chooseImmediate()">${ch.now}</button>
+    <button onclick="chooseDelayed()">${ch.later}</button>
+  `;
+}
 
-function endTask() {
+function chooseImmediate(){ biasImmediate++; biasIndex++; renderPresent(); }
+function chooseDelayed(){ biasIndex++; renderPresent(); }
+
+function finishAll(){
   participantID = genID(6);
-
   document.getElementById("code-box").textContent = participantID;
-  document.getElementById("summary-group").textContent =
-    group === "exp" ? "experimentální" : "kontrolní";
-  document.getElementById("summary-latency").textContent =
-    (latencyMs/1000).toFixed(2);
+  document.getElementById("summary-group").textContent = group==="exp"?"experimentální":"kontrolní";
+  document.getElementById("summary-latency").textContent = (latencyMs/1000).toFixed(2);
+  document.getElement
+
   document.getElementById("summary-score").textContent = correctCount;
+  document.getElementById("summary-bias").textContent = biasImmediate + " / " + PRESENT_CHOICES.length;
 
   document.getElementById("post-form").href = POST_FORM_URL;
 
@@ -369,35 +224,25 @@ function endTask() {
   show("screen-end");
 }
 
-
 // ----------------------------------------------------------
-// UTILITY
+// ODESLÁNÍ DAT DO GOOGLE SHEETS
 // ----------------------------------------------------------
 
-function genID(len) {
-  const c = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let out = "";
-  for (let i = 0; i < len; i++)
-    out += c[Math.floor(Math.random()*c.length)];
-  return out;
-}
-
-function sendToSheet() {
-  fetch(SHEET_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      participant_id: participantID,
-      group: group,
-      latency_seconds: latencyMs/1000,
-      correct_answers: correctCount
+function sendToSheet(){
+  fetch(SHEET_URL,{
+    method:"POST",
+    mode:"no-cors",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      participant_id:participantID,
+      group:group,
+      latency_seconds:latencyMs/1000,
+      correct_answers:correctCount,
+      present_bias_score: biasImmediate
     })
   });
 }
 
 </script>
-
-
 </body>
 </html>
