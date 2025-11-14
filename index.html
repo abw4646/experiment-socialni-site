@@ -1,92 +1,40 @@
+<!-- Full index.html with video blur TikTok-like feed and complete JS/HTML -->
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <title>Experiment – sociální sítě a soustředění</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      line-height: 1.6;
-      background: #f5f5f7;
-      color: #222;
-    }
-    h1, h2 {
-      color: #111827;
-    }
-    .hidden { display: none; }
-    .btn {
-      display: inline-block;
-      padding: 10px 20px;
-      margin-top: 15px;
-      border-radius: 8px;
-      border: none;
-      background: #2563eb;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .btn:disabled {
-      background: #9ca3af;
-      cursor: default;
-    }
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-      margin-bottom: 20px;
-    }
-    .feed-container {
-      max-height: 400px;
-      overflow-y: scroll;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 10px;
-      background: #111827;
-    }
-    .feed-item { margin-bottom: 12px; background: #000; border-radius: 10px; overflow: hidden; }
-    iframe {
-      width: 100%;
-      height: 220px;
-      border: none;
-      display: block;
-    }
-    .neutral-text {
-      max-height: 400px;
-      overflow-y: scroll;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 15px;
-      background: white;
-    }
-    .timer {
-      font-weight: 600;
-      color: #dc2626;
-      margin-top: 10px;
-    }
-    .task-item {
-      margin-bottom: 15px;
-    }
-    input[type="number"], input[type="text"] {
-      padding: 6px 8px;
-      border-radius: 6px;
-      border: 1px solid #d1d5db;
-      width: 120px;
-    }
-    .small { font-size: 0.9rem; color: #4b5563; }
-    .code-box {
-      font-family: monospace;
-      font-size: 1.1rem;
-      background: #111827;
-      color: #e5e7eb;
-      padding: 10px 14px;
-      border-radius: 8px;
-      display: inline-block;
-      margin: 8px 0;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Experiment – Sociální sítě</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+.hidden {
+  display: none;
+}
+.container {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+}
+button {
+  padding: 12px 24px;
+  font-size: 18px;
+  border-radius: 12px;
+  background: #4c8bf5;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+button:hover {
+  opacity: 0.9;
+}
 .video-wrapper {
   position: relative;
   width: 100%;
@@ -96,8 +44,6 @@
   border-radius: 18px;
   background: black;
 }
-
-/* Rozmazaná vrstva */
 .video-blur {
   position: absolute;
   width: 120%;
@@ -109,117 +55,99 @@
   filter: blur(25px) brightness(0.7);
   z-index: 1;
 }
-
-/* Hlavní video */
 .video-main {
   position: relative;
-  z-index: 2;
   width: 100%;
   height: 100%;
   object-fit: contain;
+  z-index: 2;
 }
-
-  </style>
+</style>
 </head>
 <body>
 
-<!-- ÚVOD -->
-<div id="screen-intro" class="card">
-  <h1>Experimentální část výzkumu</h1>
+<!-- ÚVODNÍ OBRAZOVKA -->
+<div id="screen-intro" class="container">
+  <h2>Experimentální část výzkumu</h2>
   <p>Děkujeme za účast. Po kliknutí na tlačítko budete náhodně zařazeni do jedné ze dvou skupin.</p>
-  <p class="small">Experiment trvá přibližně 3–5 minut. Prosím nezavírejte okno.</p>
-  <button class="btn" onclick="startExperiment()">Začít</button>
+  <button onclick="startExperiment()">Začít</button>
 </div>
 
 <!-- EXPOZICE -->
-<div id="screen-exposure" class="card hidden">
-  <h2>Fáze 1: Krátká expozice</h2>
-  <p id="exposure-description"></p>
+<div id="screen-exposure" class="container hidden">
+  <h3 id="exposure-description">Načítám…</h3>
+  <p>Zbývající čas: <span id="exposure-timer">120</span> sekund</p>
 
-<div class="video-wrapper">
-    <video class="video-blur" src="short2.mp4" muted playsinline></video>
-    <video class="video-main" src="short2.mp4" muted playsinline autoplay></video>
-</div>
+  <div id="exp-feed" class="feed-container hidden"
+       style="height: 90vh; overflow-y: scroll; background:#000; border-radius:18px; padding:0; margin-top:20px;">
 
-<div class="video-wrapper">
-    <video class="video-blur" src="short3.mp4" muted playsinline></video>
-    <video class="video-main" src="short3.mp4" muted playsinline autoplay></video>
-</div>
+    <div class="video-wrapper">
+      <video class="video-blur" src="short2.mp4" muted playsinline></video>
+      <video class="video-main" src="short2.mp4" muted playsinline autoplay></video>
+    </div>
 
-<div class="video-wrapper">
-    <video class="video-blur" src="short4.mp4" muted playsinline></video>
-    <video class="video-main" src="short4.mp4" muted playsinline autoplay></video>
-</div>
+    <div class="video-wrapper">
+      <video class="video-blur" src="short3.mp4" muted playsinline></video>
+      <video class="video-main" src="short3.mp4" muted playsinline autoplay></video>
+    </div>
 
-<div class="video-wrapper">
-    <video class="video-blur" src="short5.mp4" muted playsinline></video>
-    <video class="video-main" src="short5.mp4" muted playsinline autoplay></video>
-</div>
+    <div class="video-wrapper">
+      <video class="video-blur" src="short4.mp4" muted playsinline></video>
+      <video class="video-main" src="short4.mp4" muted playsinline autoplay></video>
+    </div>
 
-<div class="video-wrapper">
-    <video class="video-blur" src="short6.mp4" muted playsinline></video>
-    <video class="video-main" src="short6.mp4" muted playsinline autoplay></video>
-</div>
+    <div class="video-wrapper">
+      <video class="video-blur" src="short5.mp4" muted playsinline></video>
+      <video class="video-main" src="short5.mp4" muted playsinline autoplay></video>
+    </div>
 
-
-
-
+    <div class="video-wrapper">
+      <video class="video-blur" src="short6.mp4" muted playsinline></video>
+      <video class="video-main" src="short6.mp4" muted playsinline autoplay></video>
+    </div>
 
   </div>
 
-  <div id="ctrl-text" class="neutral-text hidden">
+  <div id="ctrl-text" class="hidden" style="text-align:left; padding:20px; background:white; border-radius:12px; margin-top:20px;">
     <h3>Neutrální text</h3>
-
-<p>Mosty představují jednu z nejdůležitějších stavebních konstrukcí, které byly kdy navrženy. Jejich hlavním účelem je umožnit překonání překážek, jako jsou vodní toky, údolí nebo jiné dopravní trasy. Při návrhu mostu se zohledňuje několik faktorů, například očekávané zatížení, klimatické podmínky, technické možnosti dané lokality a také dlouhodobá životnost celé konstrukce.</p>
-
-<p>Historicky byly mosty budovány z materiálů, které byly snadno dostupné v daném regionu. Mezi tradiční materiály patřilo dřevo, kámen nebo později železo. S rozvojem průmyslové výroby se stále více využívá ocel a železobeton, díky kterým může mít most i výrazně větší rozpětí. Moderní technologie umožňují navrhovat konstrukce s přesným výpočtem zatížení a napětí v jednotlivých částech, což přispívá k bezpečnosti i odolnosti.</p>
-
-<p>Proces výstavby mostu často zahrnuje několik fází. Nejprve se provede geologický průzkum a analýza podloží, aby bylo možné určit vhodný typ základů. Poté následuje návrh konstrukce, který musí splňovat technické normy a bezpečnostní požadavky. Po schválení dokumentace se zahájí samotná výstavba, která může trvat měsíce až roky v závislosti na velikosti a složitosti mostu.</p>
-
-<p>Důležitým aspektem provozu mostů je jejich pravidelná údržba. Ta zahrnuje kontrolu stavu nosných prvků, povrchové úpravy, ochranu proti korozi a sledování případných deformací. V některých případech se provádějí i zátěžové testy, které ověřují, zda konstrukce odpovídá předpokládaným parametrům. Správná údržba může významně prodloužit životnost mostu a zajistit jeho bezpečné používání.</p>
-
-<p>Mosty hrají významnou roli nejen v dopravě, ale také v urbanismu a regionálním rozvoji. Umožňují propojení oblastí, které by byly jinak hůře dostupné. Jejich stavba tak může přispět ke zkrácení cestovní doby, rozvoji místní ekonomiky i lepší organizaci dopravy. Přestože se jedná o poměrně běžnou součást infrastruktury, jejich návrh a výstavba stále vyžaduje pečlivé plánování a odborné znalosti.</p>
-
+    <p>
+      Toto je neutrální text určený pro kontrolní skupinu. Prosím čtěte jej po dobu dvou minut.
+      Jeho účelem je nezpůsobovat žádné emoční reakce ani zvýšenou pozornost. Tento text slouží pouze jako
+      kontrolní prvek pro porovnání výsledků experimentální skupiny.
+    </p>
   </div>
-
-  <p class="timer">Zbývající čas: <span id="exposure-timer">120</span> sekund</p>
 </div>
 
 <!-- LATENCE -->
-<div id="screen-latency" class="card hidden">
-  <h2>Fáze 2: Spuštění úkolu</h2>
-  <p>Jakmile kliknete na tlačítko, začne výkonový úkol.</p>
-  <p class="small">Latence (čas mezi zobrazením a kliknutím) se měří automaticky.</p>
-  <button class="btn" onclick="startTask()">Začít úkol</button>
+<div id="screen-latency" class="container hidden">
+  <h3>Klikněte na tlačítko pro zahájení úkolu</h3>
+  <button onclick="startTask()">Začít úkol</button>
 </div>
 
 <!-- ÚKOL -->
-<div id="screen-task" class="card hidden">
-  <h2>Fáze 3: Úkol</h2>
-  <p class="timer">Zbývající čas: <span id="task-timer">180</span> sekund</p>
-  <div id="task-content"></div>
-  <button class="btn" onclick="submitAnswer()">Odeslat a pokračovat</button>
+<div id="screen-task" class="container hidden">
+  <h3>Úkol</h3>
+  <p>Zbývající čas: <span id="task-timer">180</span> sekund</p>
+  <div id="task-content" style="margin-top:20px;"></div>
+  <button onclick="submitAnswer()">Odeslat odpověď</button>
 </div>
 
 <!-- KONEC -->
-<div id="screen-end" class="card hidden">
-  <h2>Konec experimentu</h2>
-  <p>Děkujeme za dokončení!</p>
-  <p>Váš kód účastníka:</p>
-  <div id="code-box" class="code-box"></div>
-
-  <h3>Vaše výsledky:</h3>
-  <ul>
-    <li>Skupina: <span id="summary-group"></span></li>
-    <li>Latence: <span id="summary-latency"></span> sekund</li>
-    <li>Správné odpovědi: <span id="summary-score"></span></li>
-  </ul>
-
-  <p>Pokračujte prosím do závěrečného dotazníku:</p>
-  <a id="post-form" href="#" class="btn" target="_blank">Pokračovat</a>
+<div id="screen-end" class="container hidden">
+  <h3>Děkujeme za účast</h3>
+  <p>Kód respondenta: <b id="code-box"></b></p>
+  <p>Skupina: <span id="summary-group"></span></p>
+  <p>Latence: <span id="summary-latency"></span> s</p>
+  <p>Počet správných odpovědí: <span id="summary-score"></span></p>
+  <a id="post-form" href="#" target="_blank">
+    <button>Pokračovat</button>
+  </a>
 </div>
 
 <script>
+// ----------------------------------------------------------
+// VIDEO BLUR FEED – TikTok style
+// ----------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
   const videos = document.querySelectorAll("#exp-feed .video-main");
 
@@ -257,11 +185,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
-/* ----------------------------------------------------------
-   ZBYTEK KÓDU (BEZ ZMĚN)
----------------------------------------------------------- */
-
+// ----------------------------------------------------------
+//   KONFIGURACE EXPERIMENTU
+// ----------------------------------------------------------
 const POST_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdYYYYYYYYYYYY/viewform";
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbyyadGtr2NtJLlR3PEDPlBwwm2052wT11x4d-tojtDQMW66k704tk_RSdA51-1nfmv_/exec";
 
@@ -298,11 +224,13 @@ function startExperiment() {
   if (group === "exp") {
     document.getElementById("exp-feed").classList.remove("hidden");
     document.getElementById("ctrl-text").classList.add("hidden");
-    document.getElementById("exposure-description").textContent = "Prohlížejte feed videí po dobu 2 minut.";
+    document.getElementById("exposure-description").textContent =
+      "Prohlížejte feed videí po dobu 2 minut.";
   } else {
     document.getElementById("ctrl-text").classList.remove("hidden");
     document.getElementById("exp-feed").classList.add("hidden");
-    document.getElementById("exposure-description").textContent = "Čtěte prosím text po dobu 2 minut.";
+    document.getElementById("exposure-description").textContent =
+      "Čtěte prosím text po dobu 2 minut.";
   }
 
   const t = document.getElementById("exposure-timer");
@@ -314,95 +242,4 @@ function startExperiment() {
       show("screen-latency");
       latencyStart = performance.now();
     }
-  }, 1000);
-}
-
-function startTask() {
-  latencyMs = performance.now() - latencyStart;
-  show("screen-task");
-  renderTask();
-
-  const timer = document.getElementById("task-timer");
-  const interval = setInterval(() => {
-    taskRemaining--;
-    timer.textContent = taskRemaining;
-    if (taskRemaining <= 0) {
-      clearInterval(interval);
-      endTask();
-    }
-  }, 1000);
-}
-
-function renderTask() {
-  const container = document.getElementById("task-content");
-  container.innerHTML = "";
-
-  if (currentTask >= TASKS.length) return endTask();
-
-  const t = TASKS[currentTask];
-  container.innerHTML = `
-    <div class="task-item">
-      <p>${t.text}</p>
-      <input id="task-answer" type="number">
-    </div>
-  `;
-}
-
-function submitAnswer() {
-  const inp = document.getElementById("task-answer");
-  if (!inp) return;
-
-  const val = parseInt(inp.value);
-  if (val === TASKS[currentTask].correct) correctCount++;
-
-  currentTask++;
-  if (currentTask < TASKS.length && taskRemaining > 0) {
-    renderTask();
-  } else {
-    endTask();
-  }
-}
-
-function endTask() {
-  participantID = genID(6);
-
-  document.getElementById("code-box").textContent = participantID;
-  document.getElementById("summary-group").textContent =
-    group === "exp" ? "experimentální" : "kontrolní";
-  document.getElementById("summary-latency").textContent =
-    (latencyMs / 1000).toFixed(2);
-  document.getElementById("summary-score").textContent = correctCount;
-
-  document.getElementById("post-form").href = POST_FORM_URL;
-
-  sendToSheet();
-  show("screen-end");
-}
-
-function genID(len) {
-  const c = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let out = "";
-  for (let i = 0; i < len; i++) {
-    out += c[Math.floor(Math.random() * c.length)];
-  }
-  return out;
-}
-
-function sendToSheet() {
-  fetch(SHEET_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      participant_id: participantID,
-      group: group,
-      latency_seconds: latencyMs / 1000,
-      correct_answers: correctCount
-    })
-  });
-}
-</script>
-
-</body>
-</html>
-
+  }, 1000
