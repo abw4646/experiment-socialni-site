@@ -215,6 +215,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+  videos.forEach(video => {
+  video.addEventListener("click", () => {
+    video.muted = false;
+    video.play();
+  });
+});
+
 
 /* ----------------------------------------------------------
    KONFIGURACE
