@@ -148,42 +148,42 @@ button:hover {
 // ----------------------------------------------------------
 // VIDEO BLUR FEED – TikTok style
 // ----------------------------------------------------------
-document.addEventListener("DOMContentLoaded", () => {
-  const videos = document.querySelectorAll("#exp-feed .video-main");
 
-  function pauseAll() {
-    videos.forEach(v => v.pause());
-  }
+const videos = document.querySelectorAll("#exp-feed .video-main");
 
-  // Autoplay prvního videa
-  if (videos.length > 0) {
-    videos[0].play().catch(() => {});
-  }
+function pauseAll() {
+  videos.forEach(v => v.pause());
+}
 
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
+// Autoplay prvního videa
+if (videos.length > 0) {
+  videos[0].play().catch(() => {});
+}
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pauseAll();
+      entry.target.play();
+    }
+  });
+}, { threshold: 0.6 });
+
+videos.forEach(video => observer.observe(video));
+
+videos.forEach((video, index) => {
+  video.addEventListener("ended", () => {
+    const next = videos[index + 1];
+    if (next) {
+      next.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => {
         pauseAll();
-        entry.target.play();
-      }
-    });
-  }, { threshold: 0.6 });
-
-  videos.forEach(video => observer.observe(video));
-
-  videos.forEach((video, index) => {
-    video.addEventListener("ended", () => {
-      const next = videos[index + 1];
-      if (next) {
-        next.scrollIntoView({ behavior: "smooth", block: "center" });
-        setTimeout(() => {
-          pauseAll();
-          next.play();
-        }, 600);
-      }
-    });
+        next.play();
+      }, 600);
+    }
   });
 });
+
 
 // ----------------------------------------------------------
 // KONFIGURACE
@@ -212,6 +212,7 @@ let currentTask = 0;
 let correctCount = 0;
 let participantID = null;
 
+
 // ----------------------------------------------------------
 // PŘEPÍNÁNÍ OBRAZOVEK
 // ----------------------------------------------------------
@@ -221,6 +222,7 @@ function show(id) {
     .forEach(s => document.getElementById(s).classList.add("hidden"));
   document.getElementById(id).classList.remove("hidden");
 }
+
 
 // ----------------------------------------------------------
 // START EXPERIMENTU
@@ -254,6 +256,7 @@ function startExperiment() {
   }, 1000);
 }
 
+
 // ----------------------------------------------------------
 // ÚKOL
 // ----------------------------------------------------------
@@ -282,6 +285,7 @@ function renderTask() {
   c.innerHTML = `<div class="task-item"><p>${t.text}</p><input id="task-answer" type="number"></div>`;
 }
 
+
 // ----------------------------------------------------------
 // ODPOVĚĎ
 // ----------------------------------------------------------
@@ -297,6 +301,7 @@ function submitAnswer() {
   if (currentTask < TASKS.length && taskRemaining > 0) renderTask();
   else endTask();
 }
+
 
 // ----------------------------------------------------------
 // KONEC
@@ -317,6 +322,7 @@ function endTask() {
   sendToSheet();
   show("screen-end");
 }
+
 
 // ----------------------------------------------------------
 // UTILITY
@@ -345,6 +351,7 @@ function sendToSheet() {
 }
 
 </script>
+
 
 </body>
 </html>
