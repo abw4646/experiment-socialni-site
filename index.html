@@ -186,60 +186,93 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ----------------------------------------------------------
-//   KONFIGURACE EXPERIMENTU
-// ----------------------------------------------------------
-const POST_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdYYYYYYYYYYYY/viewform";
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbyyadGtr2NtJLlR3PEDPlBwwm2052wT11x4d-tojtDQMW66k704tk_RSdA51-1nfmv_/exec";
-
-const EXPOSURE_SECONDS = 120;
-const TASK_SECONDS = 180;
-
-const TASKS = [
-  { text: "V obchodě mají balení tužek po 4 kusech. Jana koupila 3 balení. Kolik tužek koupila?", correct: 12 },
-  { text: "V krabici je 15 jablek, 4 se zkazí. Kolik jablek zbude?", correct: 11 },
-  { text: "Tomáš běžel 20 min a pak šel 15 min. Jak dlouho byl na cestě?", correct: 35 },
-  { text: "26 žáků + 18 žáků = ?", correct: 44 },
-  { text: "6 lahví v balení × 7 balení = ?", correct: 42 }
-];
-
-let group = null;
-let exposureRemaining = EXPOSURE_SECONDS;
-let taskRemaining = TASK_SECONDS;
-let latencyStart = null;
-let latencyMs = null;
-let currentTask = 0;
-let correctCount = 0;
-let participantID = null;
-
-function show(id) {
-  ["screen-intro","screen-exposure","screen-latency","screen-task","screen-end"]
-    .forEach(s => document.getElementById(s).classList.add("hidden"));
-  document.getElementById(id).classList.remove("hidden");
 }
 
-function startExperiment() {
-  group = Math.random() < 0.5 ? "exp" : "ctrl";
-  show("screen-exposure");
 
-  if (group === "exp") {
-    document.getElementById("exp-feed").classList.remove("hidden");
-    document.getElementById("ctrl-text").classList.add("hidden");
-    document.getElementById("exposure-description").textContent =
-      "Prohlížejte feed videí po dobu 2 minut.";
-  } else {
-    document.getElementById("ctrl-text").classList.remove("hidden");
-    document.getElementById("exp-feed").classList.add("hidden");
-    document.getElementById("exposure-description").textContent =
-      "Čtěte prosím text po dobu 2 minut.";
-  }
+const t = document.getElementById("exposure-timer");
+const interval = setInterval(() => {
+exposureRemaining--;
+t.textContent = exposureRemaining;
+if (exposureRemaining <= 0) {
+clearInterval(interval);
+show("screen-latency");
+latencyStart = performance.now();
+}
+}, 1000);
+}
 
-  const t = document.getElementById("exposure-timer");
-  const interval = setInterval(() => {
-    exposureRemaining--;
-    t.textContent = exposureRemaining;
-    if (exposureRemaining <= 0) {
-      clearInterval(interval);
-      show("screen-latency");
-      latencyStart = performance.now();
-    }
-  }, 1000
+
+function startTask() {
+latencyMs = performance.now() - latencyStart;
+show("screen-task");
+renderTask();
+
+
+const timer = document.getElementById("task-timer");
+const interval = setInterval(() => {
+taskRemaining--;
+timer.textContent = taskRemaining;
+if (taskRemaining <= 0) {
+clearInterval(interval);
+endTask();
+}
+}, 1000);
+}
+
+
+function renderTask() {
+const c = document.getElementById("task-content");
+c.innerHTML = "";
+if (currentTask >= TASKS.length) return endTask();
+const t = TASKS[currentTask];
+c.innerHTML = `<div class="task-item"><p>${t.text}</p><input id="task-answer" type="number"></div>`;
+}
+
+
+function submitAnswer() {
+const inp = document.getElementById("task-answer");
+if (!inp) return;
+const val = parseInt(inp.value);
+if (val === TASKS[currentTask].correct) correctCount++;
+currentTask++;
+if (currentTask < TASKS.length && taskRemaining > 0) renderTask();
+else endTask();
+}
+
+
+function endTask() {
+participantID = genID(6);
+document.getElementById("code-box").textContent = participantID;
+document.getElementById("summary-group").textContent = group === "exp" ? "experimentální" : "kontrolní";
+document.getElementById("summary-latency").textContent = (latencyMs/1000).toFixed(2);
+document.getElementById("summary-score").textContent = correctCount;
+document.getElementById("post-form").href = POST_FORM_URL;
+sendToSheet();
+show("screen-end");
+}
+
+
+function genID(len) {
+const c = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+let out = "";
+for (let i = 0; i < len; i++) out += c[Math.floor(Math.random()*c.length)];
+return out;
+}
+
+
+function sendToSheet() {
+fetch(SHEET_URL, {
+method: "POST",
+mode: "no-cors",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({
+participant_id: participantID,
+group: group,
+latency_seconds: latencyMs/1000,
+correct_answers: correctCount
+})
+});
+}
+</script>
+</body>
+</html>
