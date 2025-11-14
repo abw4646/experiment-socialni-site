@@ -137,10 +137,7 @@
   <strong>5–7 minut</strong>.
 </p>
 
-<p>
-  Po odeslání dotazníku budete automaticky přesměrováni do experimentální části
-  na samostatné stránce.
-</p>
+
 
 <p>
   Pokračováním potvrzujete, že je vám více než 18 let a souhlasíte s anonymním
@@ -271,7 +268,7 @@
     <p>Voleb „hned teď“ v mini-experimentu: <span id="summary-bias"></span></p>
     <p style="margin-top:20px;">
       <a id="post-form" href="#" target="_blank" rel="noopener">
-        Pokračovat na závěrečný dotazník
+        
       </a>
     </p>
   </div>
@@ -280,7 +277,6 @@
     // ----------------------------------------------------------
     // KONFIGURACE – DOPLŇ SI VLASTNÍ URL
     // ----------------------------------------------------------
-    const POST_FORM_URL = "https://docs.google.com/forms/d/TVŮJ_FORM_ID/viewform"; // TODO: nahradit
     const SHEET_URL     = "https://script.google.com/macros/s/AKfycbyvHZXK4_sEUvdYH8w3LYIu3hjLAoxBq8qfjiDymlMNgFoURO2nZBcomnZa8Iry6_px/exec"; // TODO: nahradit
 
     const EXPOSURE_SECONDS = 120;
@@ -624,7 +620,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function sendToSheet() {
-      if (!SHEET_URL || SHEET_URL.indexOf("TVŮJ_APPS_SCRIPT_ID") !== -1) {
+      if (!SHEET_URL || SHEET_URL.indexOf("https://script.google.com/macros/s/AKfycbyvHZXK4_sEUvdYH8w3LYIu3hjLAoxBq8qfjiDymlMNgFoURO2nZBcomnZa8Iry6_px/exec") !== -1) {
         console.warn("SHEET_URL není nastaveno nebo je placeholder.");
         return;
       }
