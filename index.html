@@ -309,11 +309,45 @@ Pokračováním potvrzujete, že je vám více než 18 let a souhlasíte s anony
     let biasImmediate = 0;            // kolikrát zvoleno "A – dnes"
 
     let participantID = null;
+document.addEventListener("DOMContentLoaded", () => {
 
-    // ----------------------------------------------------------
-    // TIKTOK FEED – AUTO PLAY / PAUSE
-    // ----------------------------------------------------------
-    const feedVideos = document.querySelectorAll("#exp-feed .video-main");
+  // ----------------------------------------------------------
+  // TIKTOK FEED – AUTO PLAY / PAUSE
+  // ----------------------------------------------------------
+  const feedVideos = document.querySelectorAll("#exp-feed .video-main");
+
+  function pauseAllVideos() {
+    feedVideos.forEach(v => v.pause());
+  }
+
+  if (feedVideos.length > 0 && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          pauseAllVideos();
+          entry.target.play().catch(err => console.warn("Autoplay error:", err));
+        }
+      });
+    }, { threshold: 0.6 });
+
+    feedVideos.forEach(video => observer.observe(video));
+
+    feedVideos.forEach((video, index) => {
+      video.addEventListener("ended", () => {
+        const next = feedVideos[index + 1];
+        if (next) {
+          next.scrollIntoView({ behavior: "smooth", block: "center" });
+          setTimeout(() => {
+            pauseAllVideos();
+            next.play().catch(() => {});
+          }, 600);
+        }
+      });
+    });
+  }
+
+}); // konec DOMContentLoaded
+
 
     function pauseAllVideos() {
       feedVideos.forEach(v => v.pause());
