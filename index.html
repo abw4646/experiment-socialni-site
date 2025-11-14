@@ -353,13 +353,26 @@ function renderPresentChoice() {
 function chooseImmediate() {
   biasImmediate++;
   biasIndex++;
+
+  if (biasIndex >= PRESENT_CHOICES.length) {
+    finishAll();
+    return;
+  }
+
   renderPresentChoice();
 }
 
 function chooseDelayed() {
   biasIndex++;
+
+  if (biasIndex >= PRESENT_CHOICES.length) {
+    finishAll();
+    return;
+  }
+
   renderPresentChoice();
 }
+
 
 // --- ZÁVĚR + ODESLÁNÍ ---
 function finishAll() {
