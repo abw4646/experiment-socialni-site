@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Experiment – sociální sítě a soustředění</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+      background: #f5f5f7;
+      color: #222;
+    }
+    h1, h2 {
+      color: #111827;
+    }
+    .hidden { display: none; }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      margin-top: 15px;
+      border-radius: 8px;
+      border: none;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .btn:disabled {
+      background: #9ca3af;
+      cursor: default;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+      margin-bottom: 20px;
+    }
+    .feed-container {
+      max-height: 400px;
+      overflow-y: scroll;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 10px;
+      background: #111827;
+    }
+    .feed-item { margin-bottom: 12px; background: #000; border-radius: 10px; overflow: hidden; }
+    iframe {
+      width: 100%;
+      height: 220px;
+      border: none;
+      display: block;
+    }
+    .neutral-text {
+      max-height: 400px;
+      overflow-y: scroll;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 15px;
+      background: white;
+    }
+    .timer {
+      font-weight: 600;
+      color: #dc2626;
+      margin-top: 10px;
+    }
+    .task-item {
+      margin-bottom: 15px;
+    }
+    input[type="number"], input[type="text"] {
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
+      width: 120px;
+    }
+    .small { font-size: 0.9rem; color: #4b5563; }
+    .code-box {
+      font-family: monospace;
+      font-size: 1.1rem;
+      background: #111827;
+      color: #e5e7eb;
+      padding: 10px 14px;
+      border-radius: 8px;
+      display: inline-block;
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ÚVOD -->
+<div id="screen-intro" class="card">
+  <h1>Experimentální část výzkumu</h1>
+  <p>Děkujeme za účast. Po kliknutí na tlačítko budete náhodně zařazeni do jedné ze dvou skupin.</p>
+  <p class="small">Experiment trvá přibližně 3–5 minut. Prosím nezavírejte okno.</p>
+  <button class="btn" onclick="startExperiment()">Začít</button>
+</div>
+
+<!-- EXPOZICE -->
+<div id="screen-exposure" class="card hidden">
+  <h2>Fáze 1: Krátká expozice</h2>
+  <p id="exposure-description"></p>
+
+  <div id="exp-feed" class="feed-container hidden">
+    <div class="feed-item"><iframe src="https://www.youtube.com/embed/YOUTUBE_VIDEO_ID_1?mute=1&autoplay=1"></iframe></div>
+    <div class="feed-item"><iframe src="https://www.youtube.com/embed/YOUTUBE_VIDEO_ID_2?mute=1&autoplay=1"></iframe></div>
+    <div class="feed-item"><iframe src="https://www.youtube.com/embed/YOUTUBE_VIDEO_ID_3?mute=1&autoplay=1"></iframe></div>
+    <div class="feed-item"><iframe src="https://www.youtube.com/embed/YOUTUBE_VIDEO_ID_4?mute=1&autoplay=1"></iframe></div>
+  </div>
+
+  <div id="ctrl-text" class="neutral-text hidden">
+    <h3>Neutrální text</h3>
+    <p>Mosty patří mezi klíčové stavební konstrukce...</p>
+    <p>... (text můžeš upravit dle potřeby) ...</p>
+  </div>
+
+  <p class="timer">Zbývající čas: <span id="exposure-timer">120</span> sekund</p>
+</div>
+
+<!-- LATENCE -->
+<div id="screen-latency" class="card hidden">
+  <h2>Fáze 2: Spuštění úkolu</h2>
+  <p>Jakmile kliknete na tlačítko, začne výkonový úkol.</p>
+  <p class="small">Latence (čas mezi zobrazením a kliknutím) se měří automaticky.</p>
+  <button class="btn" onclick="startTask()">Začít úkol</button>
+</div>
+
+<!-- ÚKOL -->
+<div id="screen-task" class="card hidden">
+  <h2>Fáze 3: Úkol</h2>
+  <p class="timer">Zbývající čas: <span id="task-timer">180</span> sekund</p>
+  <div id="task-content"></div>
+  <button class="btn" onclick="submitAnswer()">Odeslat a pokračovat</button>
+</div>
+
+<!-- KONEC -->
+<div id="screen-end" class="card hidden">
+  <h2>Konec experimentu</h2>
+  <p>Děkujeme za dokončení!</p>
+  <p>Váš kód účastníka:</p>
+  <div id="code-box" class="code-box"></div>
+
+  <h3>Vaše výsledky:</h3>
+  <ul>
+    <li>Skupina: <span id="summary-group"></span></li>
+    <li>Latence: <span id="summary-latency"></span> sekund</li>
+    <li>Správné odpovědi: <span id="summary-score"></span></li>
+  </ul>
+
+  <p>Pokračujte prosím do závěrečného dotazníku:</p>
+  <a id="post-form" href="#" class="btn" target="_blank">Pokračovat</a>
+</div>
+
+
+<script>
+/* ----------------------------------------------------------
+   KONFIGURACE
+---------------------------------------------------------- */
+const POST_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdYYYYYYYYYYYY/viewform"; // ← doplníš svůj
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbyyadGtr2NtJLlR3PEDPlBwwm2052wT11x4d-tojtDQMW66k704tk_RSdA51-1nfmv_/exec";
+
+const EXPOSURE_SECONDS = 120;
+const TASK_SECONDS = 180;
+
+const TASKS = [
+  { text: "V obchodě mají balení tužek po 4 kusech. Jana koupila 3 balení. Kolik tužek koupila?", correct: 12 },
+  { text: "V krabici je 15 jablek, 4 se zkazí. Kolik jablek zbude?", correct: 11 },
+  { text: "Tomáš běžel 20 min a pak šel 15 min. Jak dlouho byl na cestě?", correct: 35 },
+  { text: "26 žáků + 18 žáků = ?", correct: 44 },
+  { text: "6 lahví v balení × 7 balení = ?", correct: 42 }
+];
+
+/* ----------------------------------------------------------
+   PROMĚNNÉ
+---------------------------------------------------------- */
+let group = null;
+let exposureRemaining = EXPOSURE_SECONDS;
+let taskRemaining = TASK_SECONDS;
+let latencyStart = null;
+let latencyMs = null;
+let currentTask = 0;
+let correctCount = 0;
+let participantID = null;
+
+/* ----------------------------------------------------------
+   FUNKCE
+---------------------------------------------------------- */
+function show(id) {
+  ["screen-intro","screen-exposure","screen-latency","screen-task","screen-end"]
+    .forEach(s => document.getElementById(s).classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+}
+
+function startExperiment() {
+  group = Math.random() < 0.5 ? "exp" : "ctrl";
+  show("screen-exposure");
+
+  if (group === "exp") {
+    document.getElementById("exp-feed").classList.remove("hidden");
+    document.getElementById("ctrl-text").classList.add("hidden");
+    document.getElementById("exposure-description").textContent =
+      "Prohlížejte feed videí po dobu 2 minut.";
+  } else {
+    document.getElementById("ctrl-text").classList.remove("hidden");
+    document.getElementById("exp-feed").classList.add("hidden");
+    document.getElementById("exposure-description").textContent =
+      "Čtěte prosím text po dobu 2 minut.";
+  }
+
+  const t = document.getElementById("exposure-timer");
+  const interval = setInterval(() => {
+    exposureRemaining--;
+    t.textContent = exposureRemaining;
+    if (exposureRemaining <= 0) {
+      clearInterval(interval);
+      show("screen-latency");
+      latencyStart = performance.now();
+    }
+  }, 1000);
+}
+
+function startTask() {
+  latencyMs = performance.now() - latencyStart;
+  show("screen-task");
+  renderTask();
+
+  const timer = document.getElementById("task-timer");
+  const interval = setInterval(() => {
+    taskRemaining--;
+    timer.textContent = taskRemaining;
+    if (taskRemaining <= 0) {
+      clearInterval(interval);
+      endTask();
+    }
+  }, 1000);
+}
+
+function renderTask() {
+  const container = document.getElementById("task-content");
+  container.innerHTML = "";
+
+  if (currentTask >= TASKS.length) return endTask();
+
+  const t = TASKS[currentTask];
+  container.innerHTML = `
+    <div class="task-item">
+      <p>${t.text}</p>
+      <input id="task-answer" type="number">
+    </div>
+  `;
+}
+
+function submitAnswer() {
+  const inp = document.getElementById("task-answer");
+  if (!inp) return;
+
+  const val = parseInt(inp.value);
+  if (val === TASKS[currentTask].correct) correctCount++;
+
+  currentTask++;
+  if (currentTask < TASKS.length && taskRemaining > 0) renderTask();
+  else endTask();
+}
+
+function endTask() {
+  participantID = genID(6);
+
+  document.getElementById("code-box").textContent = participantID;
+  document.getElementById("summary-group").textContent =
+    group === "exp" ? "experimentální" : "kontrolní";
+  document.getElementById("summary-latency").textContent =
+    (latencyMs/1000).toFixed(2);
+  document.getElementById("summary-score").textContent = correctCount;
+
+  document.getElementById("post-form").href = POST_FORM_URL;
+
+  sendToSheet();
+  show("screen-end");
+}
+
+function genID(len) {
+  const c = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let out = "";
+  for (let i = 0; i < len; i++)
+    out += c[Math.floor(Math.random()*c.length)];
+  return out;
+}
+
+function sendToSheet() {
+  fetch(SHEET_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      participant_id: participantID,
+      group: group,
+      latency_seconds: latencyMs/1000,
+      correct_answers: correctCount
+    })
+  });
+}
+</script>
+
+</body>
+</html>
