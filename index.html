@@ -125,6 +125,13 @@
 <div id="screen-questionnaire" class="container hidden">
 <h3>Krátký dotazník</h3>
 
+  <label>E-mail (kvůli ověření kontaktu):<br>
+  <input type="email" id="q-email" placeholder="např. jana@example.com"
+         style="padding:8px; width:260px; margin-top:5px;">
+</label>
+<div id="email-error" class="error hidden">Zadejte platný e-mail (např. uzivatel@example.com).</div>
+<br><br>
+
 
 <label>Věk:<br>
 <input type="number" id="q-age" min="18" max="99" required style="padding:8px; width:200px; margin-top:5px;">
@@ -436,40 +443,30 @@ function startExperiment() {
   // náhodná skupina
   group = Math.random() < 0.5 ? "exp" : "ctrl";
 
-  // === TEST režim: když je expozice 0–1 s, přeskoč ji rovnou ===
-  if (EXPOSURE_SECONDS < 1) {
-    // jen pro konzistenci nastav popisek (nebude vlastně vidět)
-    document.getElementById("exposure-description").textContent =
-      group === "exp" ? "Prohlížejte feed videí…" : "Čtěte neutrální text…";
-
-    // rovnou jdi na měření latence
-    show("screen-latency");
-    latencyStart = performance.now();
-    return;
-  }
-
-  // === BĚŽNÝ režim: normálně zobraz expozici ===
+  // vždy nejdřív ukaž obrazovku expozice
   show("screen-exposure");
 
+  // přepni obsah podle skupiny
   if (group === "exp") {
     document.getElementById("exp-feed").classList.remove("hidden");
     document.getElementById("ctrl-text").classList.add("hidden");
     document.getElementById("exposure-description").textContent =
-      "Prohlížejte prosím feed videí po dobu 2 minut.";
+      `Prohlížejte prosím feed videí po dobu ${EXPOSURE_SECONDS} s.`;
   } else {
     document.getElementById("ctrl-text").classList.remove("hidden");
     document.getElementById("exp-feed").classList.add("hidden");
     document.getElementById("exposure-description").textContent =
-      "Čtěte prosím text po dobu 2 minut.";
+      `Čtěte prosím text po dobu ${EXPOSURE_SECONDS} s.`;
   }
 
+  // nastartuj odpočet
   const t = document.getElementById("exposure-timer");
-  exposureRemaining = EXPOSURE_SECONDS;
+  exposureRemaining = Number(EXPOSURE_SECONDS) || 0;
   t.textContent = exposureRemaining;
 
   const interval = setInterval(() => {
-    exposureRemaining--;
-    t.textContent = exposureRemaining;
+    exposureRemaining -= 1;
+    t.textContent = Math.max(0, exposureRemaining);
 
     if (exposureRemaining <= 0) {
       clearInterval(interval);
@@ -478,7 +475,6 @@ function startExperiment() {
     }
   }, 1000);
 }
-
 
 // --- START ÚKOLU ---
 function startTask() {
@@ -600,20 +596,21 @@ function genID(len) {
 }
 
 function sendToSheet() {
-const payload = {
-participant_id: participantID,
-group: group,
-latency_seconds: latencyMs / 1000,
-correct_answers: correctCount,
-present_bias_score: biasImmediate,
-present_bias_raw_choices: presentChoices,
-age: window.formAge || null,
-gender: window.formGender || null,
-social_media_minutes: window.formSocialMedia || null,
-subjective_focus: window.formFocus || null,
-procrastination_score: window.formProcrastination || null,
-problematic_use_score: window.formProblematicUse || null
-};
+  const payload = {
+    participant_id: participantID,
+    group: group,
+    latency_seconds: latencyMs / 1000,
+    correct_answers: correctCount,
+    present_bias_score: biasImmediate,
+    present_bias_raw_choices: presentChoices,
+    age: window.formAge || null,
+    email: window.formEmail || null,          // <<--- PŘIDÁNO
+    gender: window.formGender || null,
+    social_media_minutes: window.formSocialMedia || null,
+    subjective_focus: window.formFocus || null,
+    procrastination_score: window.formProcrastination || null,
+    problematic_use_score: window.formProblematicUse || null
+  };
 
 
 fetch(SHEET_URL, {
@@ -628,40 +625,71 @@ fetch(SHEET_URL, {
 
 }
 function saveQuestionnaire() {
-  // pomocná na čísla
+  // pomocné převody
   const toNum = v => {
     const n = Number(v);
     return Number.isFinite(n) ? n : null;
   };
+  const isValidEmail = (s) => typeof s === "string" && /\S+@\S+\.\S+/.test(s);
 
-  // načti hodnoty
-  const ageVal = toNum(document.getElementById("q-age").value);
-  const genderVal = document.getElementById("q-gender").value || null;
-  const socialVal = toNum(document.getElementById("q-social").value);
+  // načtení hodnot
+  const ageVal   = toNum(document.getElementById("q-age").value);
+  const emailVal = (document.getElementById("q-email")?.value || "").trim();
+  const genderVal= document.getElementById("q-gender").value || "";
+  const socialVal= toNum(document.getElementById("q-social").value);
   const focusVal = toNum(document.getElementById("q-focus").value);
   const procrastVal = toNum(document.getElementById("q-procrastination").value);
-  const problemVal = toNum(document.getElementById("q-problematic").value);
+  const problemVal   = toNum(document.getElementById("q-problematic").value);
 
-  // 18+ brána
-  const ageErr = document.getElementById("age-error");
+  // prvky pro chyby
+  const ageErr   = document.getElementById("age-error");
+  const emailErr = document.getElementById("email-error");
+
+  let ok = true;
+
+  // věk 18+
   if (!ageVal || ageVal < 18) {
     ageErr.classList.remove("hidden");
-    // přejdi pohledem na pole věku (pro mobily)
-    document.getElementById("q-age").scrollIntoView({ behavior: "smooth", block: "center" });
-    return; // NEPOKRAČUJ
+    ok = false;
   } else {
     ageErr.classList.add("hidden");
   }
 
+  // e-mail povinný + základní formát
+  if (!isValidEmail(emailVal)) {
+    emailErr.classList.remove("hidden");
+    ok = false;
+  } else {
+    emailErr.classList.add("hidden");
+  }
+
+  // povinné: pohlaví + všechna číselná pole (u čísel navíc rozsahy)
+  const missing = [];
+  if (!genderVal) missing.push("pohlaví");
+  if (socialVal === null || socialVal < 0 || socialVal > 900) missing.push("minuty na sítích (0–900)");
+  if (focusVal === null || focusVal < 1 || focusVal > 7)     missing.push("soustředění (1–7)");
+  if (procrastVal === null || procrastVal < 1 || procrastVal > 7) missing.push("odkládání (1–7)");
+  if (problemVal === null || problemVal < 1 || problemVal > 7)     missing.push("problémové užívání (1–7)");
+
+  if (missing.length) {
+    // jemná pomoc: zvýrazni prázdná políčka
+    if (!genderVal) document.getElementById("q-gender").focus();
+    alert("Doplňte prosím: " + missing.join(", "));
+    ok = false;
+  }
+
+  if (!ok) return; // NEPOKRAČUJ
+
   // ulož do window* pro odeslání
   window.formAge = ageVal;
+  window.formEmail = emailVal;
   window.formGender = genderVal;
   window.formSocialMedia = socialVal;
   window.formFocus = focusVal;
   window.formProcrastination = procrastVal;
   window.formProblematicUse = problemVal;
 
-  // schovej dotazník a pokračuj do expozice/latence
+  // schovej dotazník a pokračuj do expozice
   show("screen-exposure");
   startExperiment();
 }
