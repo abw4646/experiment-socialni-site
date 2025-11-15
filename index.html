@@ -399,6 +399,10 @@ function show(id) {
   });
   document.getElementById(id).classList.remove("hidden");
 }
+  function showQuestionnaire() {
+  show('screen-questionnaire');
+}
+
 
 // --- RANDOMIZACE ---
 function startExperiment() {
@@ -599,6 +603,8 @@ window.startTask = startTask;
 window.submitAnswer = submitAnswer;
 window.chooseImmediate = chooseImmediate;
 window.chooseDelayed = chooseDelayed;
+  window.showQuestionnaire = showQuestionnaire; // aby byla globálně dostupná pro onclick
+
 </script>
 </body>
 </html>
