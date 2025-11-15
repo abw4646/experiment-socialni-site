@@ -282,7 +282,7 @@
 <script>
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbzSO4eItQUiy7P4blTkAdxghcNau2GWrOFdDMH_q01X-_yV8PTS9opgP-jQBvQrB1nB/exec";
 
-const EXPOSURE_SECONDS = 1;
+const EXPOSURE_SECONDS = 120;
 const TASK_SECONDS = 180;
 
 const TASKS = [
@@ -437,7 +437,7 @@ function startExperiment() {
   group = Math.random() < 0.5 ? "exp" : "ctrl";
 
   // === TEST režim: když je expozice 0–1 s, přeskoč ji rovnou ===
-  if (EXPOSURE_SECONDS <= 1) {
+  if (EXPOSURE_SECONDS < 1) {
     // jen pro konzistenci nastav popisek (nebude vlastně vidět)
     document.getElementById("exposure-description").textContent =
       group === "exp" ? "Prohlížejte feed videí…" : "Čtěte neutrální text…";
