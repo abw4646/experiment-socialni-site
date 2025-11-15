@@ -12,6 +12,7 @@
       padding: 0;
       text-align: center;
     }
+.error { color: #b00020; font-size: 14px; margin-top: 6px; }
 
 .hidden { display: none !important; }
 
@@ -103,7 +104,8 @@
 
 
 <label>Věk:<br>
-<input type="number" id="q-age" min="10" max="99" style="padding:8px; width:200px; margin-top:5px;">
+<input type="number" id="q-age" min="18" max="99" required style="padding:8px; width:200px; margin-top:5px;">
+<div id="age-error" class="error hidden">Bohužel se můžete účastnit jen pokud je vám 18 a více.</div>
 </label>
 <br><br>
 
@@ -603,23 +605,44 @@ fetch(SHEET_URL, {
 
 }
 function saveQuestionnaire() {
+  // pomocná na čísla
   const toNum = v => {
     const n = Number(v);
     return Number.isFinite(n) ? n : null;
   };
 
-  window.formAge = toNum(document.getElementById("q-age").value);
-  window.formGender = document.getElementById("q-gender").value || null;
-  window.formSocialMedia = toNum(document.getElementById("q-social").value);
-  window.formFocus = toNum(document.getElementById("q-focus").value);
-  window.formProcrastination = toNum(document.getElementById("q-procrastination").value);
-  window.formProblematicUse = toNum(document.getElementById("q-problematic").value);
+  // načti hodnoty
+  const ageVal = toNum(document.getElementById("q-age").value);
+  const genderVal = document.getElementById("q-gender").value || null;
+  const socialVal = toNum(document.getElementById("q-social").value);
+  const focusVal = toNum(document.getElementById("q-focus").value);
+  const procrastVal = toNum(document.getElementById("q-procrastination").value);
+  const problemVal = toNum(document.getElementById("q-problematic").value);
 
-  // 1) hned schovej dotazník a ukaž expozici
+  // 18+ brána
+  const ageErr = document.getElementById("age-error");
+  if (!ageVal || ageVal < 18) {
+    ageErr.classList.remove("hidden");
+    // přejdi pohledem na pole věku (pro mobily)
+    document.getElementById("q-age").scrollIntoView({ behavior: "smooth", block: "center" });
+    return; // NEPOKRAČUJ
+  } else {
+    ageErr.classList.add("hidden");
+  }
+
+  // ulož do window* pro odeslání
+  window.formAge = ageVal;
+  window.formGender = genderVal;
+  window.formSocialMedia = socialVal;
+  window.formFocus = focusVal;
+  window.formProcrastination = procrastVal;
+  window.formProblematicUse = problemVal;
+
+  // schovej dotazník a pokračuj do expozice/latence
   show("screen-exposure");
-  // 2) nastartuj experiment (ten buď expozici přehraje, nebo ji přeskočí – viz bod 4)
   startExperiment();
 }
+
 
 
 
