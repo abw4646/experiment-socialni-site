@@ -580,9 +580,21 @@ body: JSON.stringify(payload)
 .then(() => console.log("Odesláno"))
 .catch(e => console.error("Chyba při odesílání: ", e));
 }
+function saveQuestionnaire() {
+  window.formAge = document.getElementById("q-age").value || null;
+  window.formGender = document.getElementById("q-gender").value || null;
+  window.formSocialMedia = document.getElementById("q-social").value || null;
+  window.formFocus = document.getElementById("q-focus").value || null;
+  window.formProcrastination = document.getElementById("q-procrastination").value || null;
+  window.formProblematicUse = document.getElementById("q-problematic").value || null;
+
+  // Pokračovat do fáze expozice
+  startExperiment();
+}
 
 
 window.startExperiment = startExperiment;
+window.saveQuestionnaire = saveQuestionnaire;
 window.startTask = startTask;
 window.submitAnswer = submitAnswer;
 window.chooseImmediate = chooseImmediate;
