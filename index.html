@@ -97,7 +97,55 @@
     <h2>Výzkum používání sociálních sítí</h2> <p> Dobrý den, děkuji vám za účast ve výzkumu zaměřeném na používání sociálních sítí, prokrastinaci a rozhodování. Tento výzkum přispěje k lepšímu pochopení toho, jak digitální obsah a online prostředí ovlivňují každodenní rozhodování, schopnost soustředění a tendenci k odkládání úkolů. Získaná data budou využita v diplomové práci a mohou sloužit jako podklad pro doporučení v oblasti managementu, marketingu i podpory zdravějšího a efektivnějšího užívání technologií. <br><br> Vyplnění zabere 5–7 minut. <br><br> Pokračováním potvrzujete, že je vám více než 18 let a souhlasíte s anonymním zpracováním dat. </p>
     <button onclick="startExperiment()">Začít</button>
   </div>
+<!-- DOTAZNÍK -->
+<div id="screen-questionnaire" class="container hidden">
+<h3>Krátký dotazník</h3>
 
+
+<label>Věk:<br>
+<input type="number" id="q-age" min="10" max="99" style="padding:8px; width:200px; margin-top:5px;">
+</label>
+<br><br>
+
+
+<label>Pohlaví:<br>
+<select id="q-gender" style="padding:8px; width:220px; margin-top:5px;">
+<option value="">Vyberte…</option>
+<option value="male">Muž</option>
+<option value="female">Žena</option>
+<option value="other">Jiné / nechci uvést</option>
+</select>
+</label>
+<br><br>
+
+
+<label>Kolik minut denně trávíte na sociálních sítích?<br>
+<input type="number" id="q-social" min="0" max="900" style="padding:8px; width:200px; margin-top:5px;">
+</label>
+<br><br>
+
+
+<label>Jak byste dnes ohodnotil/a svou schopnost soustředění? (1 = velmi nízká, 7 = vysoká)<br>
+<input type="number" id="q-focus" min="1" max="7" style="padding:8px; width:200px; margin-top:5px;">
+</label>
+<br><br>
+
+
+<label>Jak často odkládáte důležité povinnosti? (1–7)<br>
+<input type="number" id="q-procrastination" min="1" max="7" style="padding:8px; width:200px; margin-top:5px;">
+</label>
+<br><br>
+
+
+<label>Do jaké míry máte pocit, že používáte sociální sítě více, než byste chtěl/a? (1–7)<br>
+<input type="number" id="q-problematic" min="1" max="7" style="padding:8px; width:200px; margin-top:5px;">
+</label>
+<br><br>
+
+
+<button onclick="saveQuestionnaire()">Pokračovat</button>
+</div>
+  
   <!-- EXPOZICE -->
   <div id="screen-exposure" class="container hidden">
     <h3 id="exposure-description">Načítám…</h3>
@@ -213,20 +261,103 @@ const EXPOSURE_SECONDS = 120;
 const TASK_SECONDS = 180;
 
 const TASKS = [
-  { text: "V obchodě mají balení tužek po 4 kusech...", correct: 12 },
-  { text: "V krabici je 15 jablek...", correct: 11 },
-  { text: "Tomáš běžel 20 minut...", correct: 35 },
-  { text: "Ve třídě je 26 žáků...", correct: 44 },
-  { text: "V balení je 6 lahví...", correct: 42 }
+{
+text: "V obchodě mají balení tužek po 4 kusech. Jana koupila 3 balení. Kolik tužek koupila? (Představ si, že jsou to ULTRA speciální tužky, které údajně zvyšují inteligenci o 0,0001 % — sběratelé šílí.)",
+correct: 12
+},
+{
+text: "V krabici je 15 jablek a 4 se zkazí. Kolik jablek zbude? (Ta čtyři zkažená jablka dramaticky odcházejí z krabice, trucují a zakládají vlastní komunitu někde za lednicí.)",
+correct: 11
+},
+{
+text: "Tomáš běžel 20 minut a pak šel 15 minut. Jak dlouho byl na cestě? (Tomáš je hrdina — běží, protože honí svoji motivaci… která zase utekla.)",
+correct: 35
+},
+{
+text: "Ve třídě je 26 žáků a přijde dalších 18. Kolik je žáků celkem? (Je to extrémně chaotická třída — všichni přichází s nadšením, ale nikdo neví proč.)",
+correct: 44
+},
+{
+text: "V balení je 6 lahví a máme 7 balení. Kolik lahví je celkem? (Jsou to magické lahve, které se tváří obyčejně, ale když se nikdo nedívá, šeptají si mezi sebou.)",
+correct: 42
+}
 ];
 
 const PRESENT_CHOICES = [
-  { prompt: "Představte si...", now: "A) 200 Kč dnes", later: "B) 260 Kč za 7 dní" },
-  { prompt: "Spíše menší...", now: "A) 300 Kč dnes", later: "B) 380 Kč za 14 dní" },
-  { prompt: "Malá jistá radost...", now: "A) 150 Kč dnes", later: "B) 230 Kč za 7 dní" },
-  { prompt: "Jednorázový bonus...", now: "A) 500 Kč dnes", later: "B) 710 Kč za 30 dní" },
-  { prompt: "Na závěr...", now: "A) 80 Kč dnes", later: "B) 140 Kč za 7 dní" }
+  {
+    type: "delay",
+    prompt: "Představte si, že jste po dlouhém dni unavení a někdo vám nabídne malou odměnu hned… nebo větší, když vydržíte.",
+    now: "A) 200 Kč dnes",
+    later: "B) 270 Kč za 6 dní"
+  },
+  {
+    type: "delay",
+    prompt: "Dostanete možnost získat rychlou, jistou odměnu, nebo si počkat na vyšší částku.",
+    now: "A) 150 Kč dnes",
+    later: "B) 240 Kč za 7 dní"
+  },
+  {
+    type: "delay",
+    prompt: "Možnost volby mezi okamžitým potěšením a větší budoucí výhodou. Jaký typ člověka jste spíš vy?",
+    now: "A) 350 Kč dnes",
+    later: "B) 490 Kč za 14 dní"
+  },
+  {
+    type: "delay",
+    prompt: "Pracoviště vám chce dát jednorázový bonus — menší hned, nebo větší později.",
+    now: "A) 300 Kč dnes",
+    later: "B) 430 Kč za 10 dní"
+  },
+  {
+    type: "delay",
+    prompt: "Menší jistá výhra dnes, nebo větší výhoda až později. Jak silná je vaše trpělivost?",
+    now: "A) 500 Kč dnes",
+    later: "B) 800 Kč za 30 dní"
+  },
+  {
+    type: "delay",
+    prompt: "Kávové dilema: malá radost hned, nebo větší za chvíli?",
+    now: "A) 80 Kč dnes",
+    later: "B) 150 Kč za 7 dní"
+  },
+  {
+    type: "risk",
+    prompt: "Máte jistotu, nebo malou šanci na velkou výhru?",
+    now: "A) Jistých 300 Kč",
+    later: "B) 10% šance na 3000 Kč"
+  },
+  {
+    type: "risk",
+    prompt: "Zajištěná varianta vs. lákavá, ale nejistá nabídka.",
+    now: "A) Jistých 450 Kč",
+    later: "B) 25% šance na 2000 Kč"
+  },
+  {
+    type: "risk",
+    prompt: "Rozhodnutí mezi jistým ziskem a rizikem s lepším výsledkem.",
+    now: "A) Jistých 200 Kč",
+    later: "B) 50% šance na 500 Kč"
+  },
+  {
+    type: "loss",
+    prompt: "Zvažujete jistou ztrátu nebo risk nechat osud rozhodnout.",
+    now: "A) Jistá ztráta 200 Kč",
+    later: "B) 70% šance ztratit 300 Kč / 30% šance neztratit nic"
+  },
+  {
+    type: "risk",
+    prompt: "Jistý příjem, nebo malá šance na velký jackpot?",
+    now: "A) 100 Kč jistota",
+    later: "B) 5% šance na 4000 Kč"
+  },
+  {
+    type: "risk",
+    prompt: "Standardní bonus vs. riskantní výkonnostní odměna.",
+    now: "A) 700 Kč jistota",
+    later: "B) 40% šance na 2000 Kč"
+  }
 ];
+
 
 let group = null;
 let exposureRemaining = EXPOSURE_SECONDS;
