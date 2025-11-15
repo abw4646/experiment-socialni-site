@@ -95,7 +95,7 @@
   <!-- ÚVOD -->
   <div id="screen-intro" class="container">
     <h2>Výzkum používání sociálních sítí</h2> <p> Dobrý den, děkuji vám za účast ve výzkumu zaměřeném na používání sociálních sítí, prokrastinaci a rozhodování. Tento výzkum přispěje k lepšímu pochopení toho, jak digitální obsah a online prostředí ovlivňují každodenní rozhodování, schopnost soustředění a tendenci k odkládání úkolů. Získaná data budou využita v diplomové práci a mohou sloužit jako podklad pro doporučení v oblasti managementu, marketingu i podpory zdravějšího a efektivnějšího užívání technologií. <br><br> Vyplnění zabere 5–7 minut. <br><br> Pokračováním potvrzujete, že je vám více než 18 let a souhlasíte s anonymním zpracováním dat. </p>
- <button onclick="showQuestionnaire()">Začít</button>
+<button onclick="show('screen-questionnaire')">Začít</button>
   </div>
 <!-- DOTAZNÍK -->
 <div id="screen-questionnaire" class="container hidden">
@@ -357,7 +357,7 @@ let correctCount = 0;
 let biasIndex = 0;
 let biasImmediate = 0;
 let participantID = null;
-  let presentChoices = []; // <- sem se bude pushovat "now"/"later" v reálném pořadí
+let presentChoices = []; // <- pole voleb v reálném pořadí
 
 
 // --- VIDEO LOGIKA ---
