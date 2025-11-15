@@ -125,7 +125,7 @@
 <div id="screen-questionnaire" class="container hidden">
 <h3>Krátký dotazník</h3>
 
-  <label>E-mail (kvůli ověření kontaktu):<br>
+  <label>E-mail (slouží pouze pro jednorázové přiřazení kódu respondenta, nebude použit k analýze):<br>
   <input type="email" id="q-email" placeholder="např. jana@example.com"
          style="padding:8px; width:260px; margin-top:5px;">
 </label>
@@ -133,7 +133,7 @@
 <br><br>
 
 
-<label>Věk:<br>
+<label>Uveďte prosím svůj věk (slouží pouze jako kontrolní proměnná v analýze).<br>
 <input type="number" id="q-age" min="18" max="99" required style="padding:8px; width:200px; margin-top:5px;">
 <div id="age-error" class="error hidden">Bohužel se můžete účastnit jen pokud je vám 18 a více.</div>
 </label>
@@ -151,25 +151,30 @@
 <br><br>
 
 
-<label>Kolik minut denně trávíte na sociálních sítích?<br>
+<label>Kolik času průměrně trávíte denně na sociálních sítích?
+Uveďte prosím počet minut (průměr za poslední týden).<br>
 <input type="number" id="q-social" min="0" max="900" style="padding:8px; width:200px; margin-top:5px;">
 </label>
 <br><br>
 
 
-<label>Jak byste dnes ohodnotil/a svou schopnost soustředění? (1 = velmi nízká, 7 = vysoká)<br>
+<label>Jak byste obecně ohodnotil/a svou schopnost soustředit se na úkoly?
+1 = velmi nízká, 4 = průměrná, 7 = velmi vysoká.<br>
 <input type="number" id="q-focus" min="1" max="7" style="padding:8px; width:200px; margin-top:5px;">
 </label>
 <br><br>
 
 
-<label>Jak často odkládáte důležité povinnosti? (1–7)<br>
+<label>Jak často odkládáte důležité povinnosti? 1 = téměř nikdy, 4 = občas, 7 = velmi často.
+<br>
 <input type="number" id="q-procrastination" min="1" max="7" style="padding:8px; width:200px; margin-top:5px;">
 </label>
 <br><br>
+  
 
 
-<label>Do jaké míry máte pocit, že používáte sociální sítě více, než byste chtěl/a? (1–7)<br>
+<label>Do jaké míry máte pocit, že používáte sociální sítě více, než byste si sám/sama přál/a?
+1 = vůbec ne, 4 = středně, 7 = velmi výrazně.<br>
 <input type="number" id="q-problematic" min="1" max="7" style="padding:8px; width:200px; margin-top:5px;">
 </label>
 <br><br>
