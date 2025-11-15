@@ -357,6 +357,8 @@ let correctCount = 0;
 let biasIndex = 0;
 let biasImmediate = 0;
 let participantID = null;
+  +let presentChoices = []; // <- sem se bude pushovat "now"/"later" v reálném pořadí
+
 
 // --- VIDEO LOGIKA ---
 document.addEventListener("DOMContentLoaded", () => {
@@ -488,7 +490,8 @@ function submitAnswer() {
 function endTask() {
   show("screen-present");
   biasIndex = 0;
-  biasImmediate = 0;
+biasImmediate = 0;
+presentChoices = [];
   renderPresentChoice();
 }
 
@@ -511,26 +514,18 @@ function renderPresentChoice() {
 }
 
 function chooseImmediate() {
-  biasImmediate++;
-  biasIndex++;
-
-  if (biasIndex >= PRESENT_CHOICES.length) {
-    finishAll();
-    return;
+  presentChoices.push("now");
+biasImmediate++;
+biasIndex++;
+if (biasIndex >= PRESENT_CHOICES.length) return finishAll();
+renderPresentChoice();
   }
-
-  renderPresentChoice();
-}
 
 function chooseDelayed() {
-  biasIndex++;
-
-  if (biasIndex >= PRESENT_CHOICES.length) {
-    finishAll();
-    return;
-  }
-
-  renderPresentChoice();
+  presentChoices.push("later");
+biasIndex++;
+if (biasIndex >= PRESENT_CHOICES.length) return finishAll();
+renderPresentChoice();
 }
 
 
@@ -542,7 +537,7 @@ function finishAll() {
   document.getElementById("summary-group").textContent = group === "exp" ? "experimentální" : "kontrolní";
   document.getElementById("summary-latency").textContent = (latencyMs/1000).toFixed(2);
   document.getElementById("summary-score").textContent = correctCount;
-  document.getElementById("summary-bias").textContent = `${biasImmediate} / ${PRESENT_CHOICES.length}`;
+document.getElementById("summary-bias").textContent = `${biasImmediate} / ${PRESENT_CHOICES.length}`;
 
   sendToSheet();
   show("screen-end");
@@ -562,7 +557,7 @@ group: group,
 latency_seconds: latencyMs / 1000,
 correct_answers: correctCount,
 present_bias_score: biasImmediate,
-present_bias_raw_choices: PRESENT_CHOICES.map((c, i) => i < biasIndex ? (i < biasImmediate ? "now" : "later") : null),
+present_bias_raw_choices: presentChoices,
 age: window.formAge || null,
 gender: window.formGender || null,
 social_media_minutes: window.formSocialMedia || null,
