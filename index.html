@@ -13,7 +13,7 @@
       text-align: center;
     }
 
-    .hidden { display: none; }
+.hidden { display: none !important; }
 
     .container {
       max-width: 700px;
@@ -394,9 +394,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // --- PŘEPÍNÁNÍ OBRAZOVEK ---
 function show(id) {
-  ["screen-intro","screen-questionnaire","screen-exposure","screen-latency","screen-task","screen-present","screen-end"]
-    .forEach(s => document.getElementById(s).classList.add("hidden"));
-  document.getElementById(id).classList.remove("hidden");
+  // schovej úplně všechno, co začíná na screen-
+  document.querySelectorAll('[id^="screen-"]').forEach(el => el.classList.add('hidden'));
+  // ukaž cílovou obrazovku
+  document.getElementById(id).classList.remove('hidden');
+  // skoč nahoru
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
   function showQuestionnaire() {
@@ -406,24 +408,41 @@ function show(id) {
 
 // --- RANDOMIZACE ---
 function startExperiment() {
+  // náhodná skupina
   group = Math.random() < 0.5 ? "exp" : "ctrl";
+
+  // === TEST režim: když je expozice 0–1 s, přeskoč ji rovnou ===
+  if (EXPOSURE_SECONDS <= 1) {
+    // jen pro konzistenci nastav popisek (nebude vlastně vidět)
+    document.getElementById("exposure-description").textContent =
+      group === "exp" ? "Prohlížejte feed videí…" : "Čtěte neutrální text…";
+
+    // rovnou jdi na měření latence
+    show("screen-latency");
+    latencyStart = performance.now();
+    return;
+  }
+
+  // === BĚŽNÝ režim: normálně zobraz expozici ===
   show("screen-exposure");
 
   if (group === "exp") {
     document.getElementById("exp-feed").classList.remove("hidden");
     document.getElementById("ctrl-text").classList.add("hidden");
-    document.getElementById("exposure-description").textContent = "Prohlížejte prosím feed videí po dobu 2 minut.";
+    document.getElementById("exposure-description").textContent =
+      "Prohlížejte prosím feed videí po dobu 2 minut.";
   } else {
     document.getElementById("ctrl-text").classList.remove("hidden");
     document.getElementById("exp-feed").classList.add("hidden");
-    document.getElementById("exposure-description").textContent = "Čtěte prosím text po dobu 2 minut.";
+    document.getElementById("exposure-description").textContent =
+      "Čtěte prosím text po dobu 2 minut.";
   }
 
   const t = document.getElementById("exposure-timer");
   exposureRemaining = EXPOSURE_SECONDS;
   t.textContent = exposureRemaining;
 
-  const interval = setInterval(()=>{
+  const interval = setInterval(() => {
     exposureRemaining--;
     t.textContent = exposureRemaining;
 
@@ -432,8 +451,9 @@ function startExperiment() {
       show("screen-latency");
       latencyStart = performance.now();
     }
-  },1000);
+  }, 1000);
 }
+
 
 // --- START ÚKOLU ---
 function startTask() {
@@ -587,14 +607,20 @@ function saveQuestionnaire() {
     const n = Number(v);
     return Number.isFinite(n) ? n : null;
   };
+
   window.formAge = toNum(document.getElementById("q-age").value);
   window.formGender = document.getElementById("q-gender").value || null;
   window.formSocialMedia = toNum(document.getElementById("q-social").value);
   window.formFocus = toNum(document.getElementById("q-focus").value);
   window.formProcrastination = toNum(document.getElementById("q-procrastination").value);
   window.formProblematicUse = toNum(document.getElementById("q-problematic").value);
+
+  // 1) hned schovej dotazník a ukaž expozici
+  show("screen-exposure");
+  // 2) nastartuj experiment (ten buď expozici přehraje, nebo ji přeskočí – viz bod 4)
   startExperiment();
 }
+
 
 
 window.startExperiment = startExperiment;
