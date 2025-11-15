@@ -394,8 +394,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // --- PŘEPÍNÁNÍ OBRAZOVEK ---
 function show(id) {
-  document.querySelectorAll('[id^="screen-"]').forEach(el => el.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
+  ["screen-intro","screen-questionnaire","screen-exposure","screen-latency","screen-task","screen-present","screen-end"]
+    .forEach(s => document.getElementById(s).classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
   function showQuestionnaire() {
