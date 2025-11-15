@@ -149,7 +149,7 @@
   <!-- EXPOZICE -->
   <div id="screen-exposure" class="container hidden">
     <h3 id="exposure-description">Načítám…</h3>
-    <p>Zbývající čas: <span id="exposure-timer">1</span> sekund</p>
+    <p>Zbývající čas: <span id="exposure-timer">120</span> sekund</p>
 
     <div id="exp-feed" class="feed-container hidden" style="height: 90vh; overflow-y: scroll; background:#000; border-radius:18px; padding:0; margin-top:20px;">
       <div class="video-wrapper">
@@ -284,78 +284,64 @@ correct: 42
 ];
 
 const PRESENT_CHOICES = [
-  {
-    type: "delay",
-    prompt: "Představte si, že jste po dlouhém dni unavení a někdo vám nabídne malou odměnu hned… nebo větší, když vydržíte.",
-    now: "A) 200 Kč dnes",
-    later: "B) 270 Kč za 6 dní"
-  },
-  {
-    type: "delay",
-    prompt: "Dostanete možnost získat rychlou, jistou odměnu, nebo si počkat na vyšší částku.",
-    now: "A) 150 Kč dnes",
-    later: "B) 240 Kč za 7 dní"
-  },
-  {
-    type: "delay",
-    prompt: "Možnost volby mezi okamžitým potěšením a větší budoucí výhodou. Jaký typ člověka jste spíš vy?",
-    now: "A) 350 Kč dnes",
-    later: "B) 490 Kč za 14 dní"
-  },
-  {
-    type: "delay",
-    prompt: "Pracoviště vám chce dát jednorázový bonus — menší hned, nebo větší později.",
-    now: "A) 300 Kč dnes",
-    later: "B) 430 Kč za 10 dní"
-  },
-  {
-    type: "delay",
-    prompt: "Menší jistá výhra dnes, nebo větší výhoda až později. Jak silná je vaše trpělivost?",
-    now: "A) 500 Kč dnes",
-    later: "B) 800 Kč za 30 dní"
-  },
-  {
-    type: "delay",
-    prompt: "Kávové dilema: malá radost hned, nebo větší za chvíli?",
-    now: "A) 80 Kč dnes",
-    later: "B) 150 Kč za 7 dní"
-  },
-  {
-    type: "risk",
-    prompt: "Máte jistotu, nebo malou šanci na velkou výhru?",
-    now: "A) Jistých 300 Kč",
-    later: "B) 10% šance na 3000 Kč"
-  },
-  {
-    type: "risk",
-    prompt: "Zajištěná varianta vs. lákavá, ale nejistá nabídka.",
-    now: "A) Jistých 450 Kč",
-    later: "B) 25% šance na 2000 Kč"
-  },
-  {
-    type: "risk",
-    prompt: "Rozhodnutí mezi jistým ziskem a rizikem s lepším výsledkem.",
-    now: "A) Jistých 200 Kč",
-    later: "B) 50% šance na 500 Kč"
-  },
-  {
-    type: "loss",
-    prompt: "Zvažujete jistou ztrátu nebo risk nechat osud rozhodnout.",
-    now: "A) Jistá ztráta 200 Kč",
-    later: "B) 70% šance ztratit 300 Kč / 30% šance neztratit nic"
-  },
-  {
-    type: "risk",
-    prompt: "Jistý příjem, nebo malá šance na velký jackpot?",
-    now: "A) 100 Kč jistota",
-    later: "B) 5% šance na 4000 Kč"
-  },
-  {
-    type: "risk",
-    prompt: "Standardní bonus vs. riskantní výkonnostní odměna.",
-    now: "A) 700 Kč jistota",
-    later: "B) 40% šance na 2000 Kč"
-  }
+prompt: "Jde o volbu mezi okamžitým potěšením a větší budoucí výhodou. Co odpovídá vašemu stylu rozhodování?",
+now: "A) 350 Kč dnes",
+later: "B) 490 Kč za 14 dní"
+},
+{
+type: "delay",
+prompt: "Po menším úspěchu dostanete možnost vybrat si bonus hned, nebo počkat a získat vyšší částku. Co byste udělali?",
+now: "A) 300 Kč dnes",
+later: "B) 430 Kč za 10 dní"
+},
+{
+type: "delay",
+prompt: "Menší jistá výhra dnes, nebo větší odměna za delší čekání. Jak silná je vaše trpělivost v této situaci?",
+now: "A) 500 Kč dnes",
+later: "B) 800 Kč za 30 dní"
+},
+{
+type: "delay",
+prompt: "Kávové dilema: malá radost hned, nebo větší o kousek později?",
+now: "A) 80 Kč dnes",
+later: "B) 150 Kč za 7 dní"
+},
+{
+type: "risk",
+prompt: "Představte si, že si můžete vzít menší jistou částku, nebo zkusit štěstí v malé loterii s vyšší možnou výhrou. Co zvolíte?",
+now: "A) 300 Kč jistota",
+later: "B) 10% šance na 3000 Kč"
+},
+{
+type: "risk",
+prompt: "Rozhodujete se mezi zajištěnou odměnou a možností vyhrát více, pokud budete mít štěstí. Co je vám bližší?",
+now: "A) 450 Kč jistota",
+later: "B) 25% šance na 2000 Kč"
+},
+{
+type: "risk",
+prompt: "Volíte mezi jistým ziskem a loterií s potenciálně vyšším výsledkem. Co byste zvolili?",
+now: "A) 200 Kč jistota",
+later: "B) 50% šance na 500 Kč"
+},
+{
+type: "loss",
+prompt: "Teď opačný pohled: máte jistou malou ztrátu, nebo risk, že ztratíte více — ale možná také neztratíte nic. Jak byste se rozhodli?",
+now: "A) Jistá ztráta 200 Kč",
+later: "B) 70% šance ztratit 300 Kč / 30% šance neztratit nic"
+},
+{
+type: "risk",
+prompt: "Jistý příjem, nebo malá šance na výrazně větší výhru — která možnost je vám příjemnější?",
+now: "A) 100 Kč jistota",
+later: "B) 5% šance na 4000 Kč"
+},
+{
+type: "risk",
+prompt: "Standardní bonus vs. riskantní výkonnostní odměna. Komu byste dali přednost?",
+now: "A) 700 Kč jistota",
+later: "B) 40% šance na 2000 Kč"
+}
 ];
 
 
