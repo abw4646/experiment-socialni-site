@@ -437,22 +437,31 @@ function genID(len) {
 }
 
 function sendToSheet() {
-  const payload = {
-    participant_id: participantID,
-    group: group,
-    latency_seconds: latencyMs/1000,
-    correct_answers: correctCount,
-    present_bias_score: biasImmediate
-  };
+const payload = {
+participant_id: participantID,
+group: group,
+latency_seconds: latencyMs / 1000,
+correct_answers: correctCount,
+present_bias_score: biasImmediate,
+present_bias_raw_choices: PRESENT_CHOICES.map((c, i) => i < biasIndex ? (i < biasImmediate ? "now" : "later") : null),
+age: window.formAge || null,
+gender: window.formGender || null,
+social_media_minutes: window.formSocialMedia || null,
+subjective_focus: window.formFocus || null,
+procrastination_score: window.formProcrastination || null,
+problematic_use_score: window.formProblematicUse || null
+};
 
-  fetch(SHEET_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  })
-  .then(()=>console.log("Odesláno"))
-  .catch(e=>console.error("Chyba při odesílání: ",e));
+
+fetch(SHEET_URL, {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify(payload)
+})
+.then(() => console.log("Odesláno"))
+.catch(e => console.error("Chyba při odesílání: ", e));
 }
+
 
 window.startExperiment = startExperiment;
 window.startTask = startTask;
