@@ -225,6 +225,10 @@ Uveďte prosím počet minut (průměr za poslední týden).<br>
   <div id="screen-exposure" class="container hidden">
     <h3 id="exposure-description">Načítám…</h3>
     <p>Zbývající čas: <span id="exposure-timer">120</span> sekund</p>
+    <p class="small-note">
+  Následující ukázky jsou složeny z krátkých veřejně dostupných videí
+  z&nbsp;platformy YouTube a slouží pouze pro účely tohoto výzkumu.
+</p>
 
     <div id="exp-feed" class="feed-container hidden" style="height: 90vh; overflow-y: scroll; background:#000; border-radius:18px; padding:0; margin-top:20px;">
       <div class="video-wrapper">
@@ -297,11 +301,19 @@ Uveďte prosím počet minut (průměr za poslední týden).<br>
     </div>
   </div>
 
-  <!-- LATENCE -->
-  <div id="screen-latency" class="container hidden">
-    <h3>Klikněte na tlačítko pro zahájení úkolu</h3>
-    <button onclick="startTask()">Začít úkol</button>
-  </div>
+ <!-- LATENCE -->
+<div id="screen-latency" class="container hidden">
+  <h3>Začátek krátkého úkolu</h3>
+  <p>
+    Po kliknutí na tlačítko se zobrazí jednoduchý úkol s několika
+    základními početními příklady. Úkol je časově omezený a cílem je
+    odpovědět co nejpřesněji.
+  </p>
+  <p>
+    Jakmile budete připraven/a, klikněte na tlačítko níže pro zahájení úkolu.
+  </p>
+  <button onclick="startTask()">Začít úkol</button>
+</div>
 
   <!-- ÚKOL -->
   <div id="screen-task" class="container hidden">
