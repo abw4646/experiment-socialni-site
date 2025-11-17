@@ -359,67 +359,78 @@ correct: 42
 ];
 
 const PRESENT_CHOICES = [
-{
-  type: "delay",
-  prompt: "Jde o volbu mezi okamžitým potěšením a větší budoucí výhodou. Co odpovídá vašemu stylu rozhodování?",
-  now: "A) 350 Kč dnes",
-  later: "B) 490 Kč za 14 dní"
-},
-{
-  type: "delay",
-  prompt: "Po menším úspěchu dostanete možnost vybrat si bonus hned, nebo počkat a získat vyšší částku. Co byste udělali?",
-  now: "A) 300 Kč dnes",
-  later: "B) 430 Kč za 10 dní"
-},
-{
-  type: "delay",
-  prompt: "Menší jistá výhra dnes, nebo větší odměna za delší čekání. Jak silná je vaše trpělivost v této situaci?",
-  now: "A) 500 Kč dnes",
-  later: "B) 800 Kč za 30 dní"
-},
-{
-  type: "delay",
-  prompt: "Kávové dilema: malá radost hned, nebo větší o kousek později?",
-  now: "A) 80 Kč dnes",
-  later: "B) 150 Kč za 7 dní"
-},
-{
-  type: "risk",
-  prompt: "Představte si, že si můžete vzít menší jistou částku, nebo zkusit štěstí v malé loterii s vyšší možnou výhrou. Co zvolíte?",
-  now: "A) 300 Kč jistota",
-  later: "B) 10% šance na 3000 Kč"
-},
-{
-  type: "risk",
-  prompt: "Rozhodujete se mezi zajištěnou odměnou a možností vyhrát více, pokud budete mít štěstí. Co je vám bližší?",
-  now: "A) 450 Kč jistota",
-  later: "B) 25% šance na 2000 Kč"
-},
-{
-  type: "risk",
-  prompt: "Volíte mezi jistým ziskem a loterií s potenciálně vyšším výsledkem. Co byste zvolili?",
-  now: "A) 200 Kč jistota",
-  later: "B) 50% šance na 500 Kč"
-},
-{
-  type: "loss",
-  prompt: "Máte jistou malou ztrátu, nebo risk, že ztratíte více — ale možná také neztratíte nic. Jak byste se rozhodli?",
-  now: "A) Jistá ztráta 200 Kč",
-  later: "B) 70% šance ztratit 300 Kč / 30% šance neztratit nic"
-},
-{
-  type: "risk",
-  prompt: "Jistý příjem, nebo malá šance na výrazně větší výhru — která možnost je vám příjemnější?",
-  now: "A) 100 Kč jistota",
-  later: "B) 5% šance na 4000 Kč"
-},
-{
-  type: "risk",
-  prompt: "Standardní bonus vs. riskantní výkonnostní odměna. Komu byste dali přednost?",
-  now: "A) 700 Kč jistota",
-  later: "B) 40% šance na 2000 Kč"
-}
+  {
+    type: "delay",
+    prompt:
+      "Po úspěšně zvládnutém zkouškovém období vám rodiče/slibují malou odměnu. Co je vám bližší?",
+    now: "A) 250 Kč dnes na cokoliv (třeba káva, fastfood, menší radost)",
+    later: "B) 400 Kč za 7 dní, které můžete použít na větší nákup nebo výlet"
+  },
+  {
+    type: "delay",
+    prompt:
+      "Po brigádě vám zaměstnavatel nabízí bonus. Můžete ho dostat hned, nebo počkat na vyšší částku vyplacenou později.",
+    now: "A) 300 Kč navíc k výplatě dnes",
+    later: "B) 460 Kč navíc za 10 dní"
+  },
+  {
+    type: "delay",
+    prompt:
+      "Dostanete možnost vybrat si formu odměny za splněný projekt. Co byste zvolil/a?",
+    now: "A) 350 Kč dnes",
+    later: "B) 520 Kč za 14 dní"
+  },
+  {
+    type: "delay",
+    prompt:
+      "Představte si, že vám vrací peníze za zrušené předplatné streamovací služby.",
+    now: "A) Vrácení 200 Kč dnes",
+    later: "B) Vrácení 320 Kč za 14 dní"
+  },
+  {
+    type: "delay",
+    prompt:
+      "Získáváte voucher, který můžete proměnit buď hned, nebo počkat na vyšší hodnotu.",
+    now: "A) Voucher v hodnotě 500 Kč dnes",
+    later: "B) Voucher v hodnotě 800 Kč za 30 dní"
+  },
+  {
+    type: "delay",
+    prompt:
+      "Za splnění tréninkového plánu / osobní výzvy dostanete finanční odměnu. Jak byste se rozhodl/a?",
+    now: "A) 150 Kč dnes jako malá motivace",
+    later: "B) 300 Kč za 21 dní, pokud vydržíte do konce plánu"
+  },
+  {
+    type: "delay",
+    prompt:
+      "Máte možnost zvolit si formu příspěvku na dovolenou.",
+    now: "A) 600 Kč dnes na drobné výdaje",
+    later: "B) 950 Kč za 45 dní jako příspěvek na větší dovolenou"
+  },
+  {
+    type: "delay",
+    prompt:
+      "Představte si, že vám banka nabízí jednorázovou odměnu za používání platební karty.",
+    now: "A) 220 Kč připsaných na účet dnes",
+    later: "B) 380 Kč připsaných na účet za 20 dní"
+  },
+  {
+    type: "delay",
+    prompt:
+      "Vyhrál/a jste menší soutěž na sociální síti a můžete si vybrat typ výhry.",
+    now: "A) 270 Kč dnes",
+    later: "B) 450 Kč za 25 dní"
+  },
+  {
+    type: "delay",
+    prompt:
+      "Při podpisu smlouvy (např. brigáda, krátká zakázka) vám nabízejí dvě možnosti vyplacení bonusu.",
+    now: "A) 400 Kč dnes při podpisu",
+    later: "B) 700 Kč za 60 dní po úspěšném dokončení"
+  }
 ];
+
 
 
 let group = null;
